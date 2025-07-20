@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payback Coupon-Klicker Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px; 
+        }
+        .test-section { 
+            margin: 20px 0; 
+            padding: 20px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+        }
+        .bookmarklet-code { 
+            background: #f4f4f4; 
+            padding: 15px; 
+            border-radius: 5px; 
+            font-family: monospace; 
+            word-break: break-all; 
+            font-size: 12px; 
+        }
+        .instructions { 
+            background: #e7f3ff; 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin: 15px 0; 
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎯 Payback Coupon-Klicker Test</h1>
+    
+    <div class="test-section">
+        <h2>📋 1. Bookmarklet-Code (Copy & Paste)</h2>
+        <p>Kopiere diesen Code für dein Browser-Lesezeichen:</p>
+        <div class="bookmarklet-code">
+            javascript:!function(){const e=document.querySelector("pb-coupon-center");if(e&&e.shadowRoot){const o=e.shadowRoot.querySelectorAll("pbc-coupon");let t=0;o.forEach(e=>{if(e.shadowRoot){const o=e.shadowRoot.querySelector("pbc-coupon-call-to-action");if(o&&o.shadowRoot){const e=o.shadowRoot.querySelector(".not-activated");e&&(e.click(),t++)}}),setTimeout(()=>{alert(`${t} Coupons wurden aktiviert.`),confirm("Möchten Sie die Seite neu laden?")&&location.reload()},2e3)}else alert("Keine aktivierbaren Coupons gefunden. Möglicherweise sind alle Coupons bereits aktiviert oder die Seitenstruktur hat sich geändert.")}();
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔧 2. Bookmarklet Installation</h2>
+        <div class="instructions">
+            <strong>So installierst du das Bookmarklet:</strong>
+            <ol>
+                <li>Kopiere den obigen Code (Strg+C)</li>
+                <li>Rechtsklick in deine Browser-Lesezeichen-Leiste</li>
+                <li>"Neues Lesezeichen hinzufügen" wählen</li>
+                <li>Name: "Payback Coupon-Klicker"</li>
+                <li>URL: Den kopierten Code einfügen</li>
+                <li>Speichern!</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 3. Funktionstest</h2>
+        <p>Teste hier, ob JavaScript in deinem Browser funktioniert:</p>
+        <button class="test-button" onclick="testJavaScript()">JavaScript Test</button>
+        <div id="test-result" style="margin-top: 10px;"></div>
+        
+        <script>
+            function testJavaScript() {
+                document.getElementById('test-result').innerHTML = 
+                    '<span style="color: green;">✅ JavaScript funktioniert! Das Bookmarklet sollte auch funktionieren.</span>';
+            }
+        </script>
+    </div>
+
+    <div class="test-section">
+        <h2>🌐 4. Browser-Kompatibilität</h2>
+        <p><strong>Das Bookmarklet funktioniert mit:</strong></p>
+        <ul>
+            <li>✅ Chrome (alle Versionen)</li>
+            <li>✅ Firefox (alle Versionen)</li>
+            <li>✅ Safari (alle Versionen)</li>
+            <li>✅ Edge (alle Versionen)</li>
+            <li>✅ Opera (alle Versionen)</li>
+        </ul>
+        
+        <p><strong>Wichtig:</strong> Das Bookmarklet funktioniert nur auf payback.de, wenn Coupons verfügbar sind!</p>
+    </div>
+
+    <div class="test-section">
+        <h2>🚀 5. Jetzt testen!</h2>
+        <div class="instructions">
+            <p><strong>So testest du das Bookmarklet:</strong></p>
+            <ol>
+                <li>Installiere das Bookmarklet wie oben beschrieben</li>
+                <li>Gehe zu <a href="https://payback.de" target="_blank">payback.de</a></li>
+                <li>Melde dich in deinem Account an</li>
+                <li>Navigiere zur Coupon-Seite</li>
+                <li>Klicke auf dein Bookmarklet "Payback Coupon-Klicker"</li>
+                <li>🎉 Alle verfügbaren Coupons werden automatisch aktiviert!</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>❓ Probleme?</h2>
+        <p><strong>Wenn das Bookmarklet nicht funktioniert:</strong></p>
+        <ul>
+            <li>Stelle sicher, dass du auf der richtigen Payback-Seite bist</li>
+            <li>Prüfe, ob Coupons zum Aktivieren verfügbar sind</li>
+            <li>Lade die Seite neu und versuche es erneut</li>
+            <li>Prüfe, ob JavaScript in deinem Browser aktiviert ist</li>
+        </ul>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firefox Bookmarklet Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .test-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .code-box {
+            background: #f1f3f4;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            word-break: break-all;
+            user-select: all;
+            cursor: text;
+        }
+        .copy-btn {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .copy-btn:hover {
+            background: #1565c0;
+        }
+        .success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 12px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .step {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .step h4 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🦊 Firefox Bookmarklet Test</h1>
+    
+    <div class="test-card">
+        <h2>📋 Optimierter Firefox-Code</h2>
+        <p>Dieser Code wurde speziell für Firefox optimiert:</p>
+        <div class="code-box" id="bookmarklet-code">
+javascript:(function(){function createStatusDiv(){var statusDiv=document.getElementById('payback-coupon-status');if(statusDiv)statusDiv.remove();statusDiv=document.createElement('div');statusDiv.id='payback-coupon-status';statusDiv.style.cssText='position:fixed;top:20px;right:20px;background:#28a745;color:white;padding:15px;border-radius:8px;font-family:Arial,sans-serif;font-size:14px;z-index:99999;box-shadow:0 4px 8px rgba(0,0,0,0.3);max-width:300px;';document.body.appendChild(statusDiv);return statusDiv;}function updateStatus(message,isError){var statusDiv=document.getElementById('payback-coupon-status');if(statusDiv){statusDiv.textContent=message;statusDiv.style.background=isError?'#dc3545':'#28a745';setTimeout(function(){if(statusDiv.parentNode){statusDiv.parentNode.removeChild(statusDiv);}},5000);}}function activateCoupons(){try{var statusDiv=createStatusDiv();updateStatus('🔍 Suche Coupons...');setTimeout(function(){var couponCenter=document.querySelector('pb-coupon-center');if(!couponCenter){updateStatus('❌ Keine Payback-Coupon-Seite gefunden',true);return;}if(!couponCenter.shadowRoot){updateStatus('❌ Shadow DOM nicht verfügbar',true);return;}var coupons=couponCenter.shadowRoot.querySelectorAll('pbc-coupon');if(coupons.length===0){updateStatus('ℹ️ Keine Coupons gefunden');return;}updateStatus('⚡ Aktiviere '+coupons.length+' Coupons...');var activatedCount=0;for(var i=0;i<coupons.length;i++){(function(coupon,index){setTimeout(function(){try{if(coupon.shadowRoot){var button=coupon.shadowRoot.querySelector('pbc-coupon-call-to-action');if(button&&button.shadowRoot){var aktivierenButton=button.shadowRoot.querySelector('.not-activated');if(aktivierenButton){aktivierenButton.click();activatedCount++;console.log('Coupon '+(index+1)+' aktiviert');}}}}catch(e){console.warn('Fehler bei Coupon '+(index+1)+':',e);}if(index===coupons.length-1){setTimeout(function(){if(activatedCount>0){updateStatus('✅ '+activatedCount+' Coupons aktiviert!');setTimeout(function(){if(window.confirm('Seite neu laden um Änderungen zu sehen?')){location.reload();}},2000);}else{updateStatus('ℹ️ Keine neuen Coupons aktiviert');}},500);}},index*300);})(coupons[i],i);}},100);}catch(error){console.error('Bookmarklet Fehler:',error);updateStatus('❌ Unerwarteter Fehler: '+error.message,true);}}activateCoupons();})();
+        </div>
+        <button class="copy-btn" onclick="copyCode()">📋 Code kopieren</button>
+        <div id="copy-status"></div>
+    </div>
+
+    <div class="test-card">
+        <h2>🔧 Firefox Installation</h2>
+        
+        <div class="step">
+            <h4>Schritt 1: Code kopieren</h4>
+            <p>Klicke auf "Code kopieren" oben oder markiere den kompletten Code und kopiere ihn (Strg+C).</p>
+        </div>
+        
+        <div class="step">
+            <h4>Schritt 2: Lesezeichen erstellen</h4>
+            <p><strong>Firefox:</strong></p>
+            <ul>
+                <li>Drücke <kbd>Strg+Shift+B</kbd> um die Lesezeichen-Seitenleiste zu öffnen</li>
+                <li>Rechtsklick in die Lesezeichen-Seitenleiste</li>
+                <li>"Neues Lesezeichen..." wählen</li>
+                <li><strong>Name:</strong> "Payback Coupon-Klicker"</li>
+                <li><strong>URL:</strong> Den kopierten Code hier einfügen</li>
+                <li>Speichern</li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <h4>Schritt 3: Testen</h4>
+            <p>1. Gehe zu <a href="https://payback.de" target="_blank">payback.de</a></p>
+            <p>2. Melde dich an und navigiere zur Coupon-Seite</p>
+            <p>3. Klicke auf dein Lesezeichen "Payback Coupon-Klicker"</p>
+            <p>4. Du solltest eine Status-Anzeige oben rechts sehen! 🎯</p>
+        </div>
+    </div>
+
+    <div class="test-card">
+        <h2>🧪 Firefox-Kompatibilitätstest</h2>
+        <button class="copy-btn" onclick="runFirefoxTest()">Firefox Test starten</button>
+        <div id="test-results"></div>
+    </div>
+
+    <div class="test-card">
+        <h2>🔍 Debugging-Hilfen</h2>
+        <p><strong>Falls das Bookmarklet nicht funktioniert:</strong></p>
+        <ol>
+            <li><strong>Firefox Konsole öffnen:</strong> F12 → "Konsole"</li>
+            <li><strong>Bookmarklet ausführen</strong> und Fehlermeldungen beachten</li>
+            <li><strong>Shadow DOM prüfen:</strong> Suche in der Konsole nach "Coupon X aktiviert"</li>
+            <li><strong>Status-Anzeige:</strong> Sollte oben rechts erscheinen</li>
+        </ol>
+        
+        <div class="step">
+            <h4>Debug-Bookmarklet</h4>
+            <p>Verwende diese Version für ausführliche Konsolen-Logs:</p>
+            <div class="code-box">
+javascript:(function(){console.log('🎯 Bookmarklet gestartet');var couponCenter=document.querySelector('pb-coupon-center');console.log('Coupon Center gefunden:',couponCenter);if(couponCenter&&couponCenter.shadowRoot){var coupons=couponCenter.shadowRoot.querySelectorAll('pbc-coupon');console.log('Gefundene Coupons:',coupons.length);alert('✅ '+coupons.length+' Coupons gefunden!');}else{console.error('❌ Kein Coupon Center oder Shadow DOM');alert('❌ Keine Coupons gefunden - prüfe Konsole!');}})();
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyCode() {
+            const code = document.getElementById('bookmarklet-code').textContent;
+            navigator.clipboard.writeText(code).then(function() {
+                document.getElementById('copy-status').innerHTML = 
+                    '<div class="success">✅ Code in Zwischenablage kopiert!</div>';
+            }).catch(function(err) {
+                console.error('Copy failed:', err);
+                document.getElementById('copy-status').innerHTML = 
+                    '<div class="error">❌ Kopieren fehlgeschlagen - bitte manuell markieren und kopieren</div>';
+            });
+        }
+
+        function runFirefoxTest() {
+            const results = document.getElementById('test-results');
+            let testResults = '<h4>Test-Ergebnisse:</h4>';
+            
+            // Test JavaScript
+            try {
+                const testDiv = document.createElement('div');
+                testDiv.style.cssText = 'position:fixed;top:10px;left:10px;background:green;color:white;padding:10px;z-index:99999;';
+                testDiv.textContent = 'Firefox Test erfolgreich!';
+                document.body.appendChild(testDiv);
+                setTimeout(() => testDiv.remove(), 2000);
+                testResults += '<div class="success">✅ JavaScript funktioniert</div>';
+            } catch (e) {
+                testResults += '<div class="error">❌ JavaScript Fehler: ' + e.message + '</div>';
+            }
+            
+            // Test DOM-Manipulation
+            try {
+                const testElement = document.querySelector('body');
+                testResults += '<div class="success">✅ DOM-Zugriff funktioniert</div>';
+            } catch (e) {
+                testResults += '<div class="error">❌ DOM-Fehler: ' + e.message + '</div>';
+            }
+            
+            // Test Shadow DOM Support
+            if ('attachShadow' in Element.prototype) {
+                testResults += '<div class="success">✅ Shadow DOM wird unterstützt</div>';
+            } else {
+                testResults += '<div class="error">❌ Shadow DOM wird nicht unterstützt</div>';
+            }
+            
+            // Browser Info
+            testResults += '<div class="success">✅ Browser: ' + navigator.userAgent.split(' ')[0] + '</div>';
+            
+            results.innerHTML = testResults;
+        }
+    </script>
+</body>
+</html>

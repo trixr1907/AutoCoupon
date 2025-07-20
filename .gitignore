@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+package-lock.json
+
+# Temporary files
+*.tmp
+*.temp
+fixed-bookmarklet.txt
+test-bookmarklet.html
+firefox-test.html
+
+# Build files
+build-bookmarklet.js
+
+# OS files
+.DS_Store
+Thumbs.db
