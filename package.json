@@ -1,7 +1,25 @@
 {
   "name": "payback-coupon-activator",
-  "version": "1.1.0",
+  "version": "2.0.0",
+  "description": "SOTA Payback Coupon Activator Bookmarklet",
   "scripts": {
-    "format": "prettier --write . --tab-width 2"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "build:firefox": "node build-firefox.js",
+    "generate-icons": "node scripts/generate-icons.js",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.1.32",
+    "@typescript-eslint/eslint-plugin": "^6.16.0",
+    "@typescript-eslint/parser": "^6.16.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1",
+    "sharp": "^0.34.5",
+    "terser": "^5.26.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10"
   }
 }

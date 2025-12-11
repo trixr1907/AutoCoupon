@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Payback Activator by Ivo",
+  "version": "2.0.0",
+  "description": "Premium Coupon Aktivator im Synthwave Design",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "*://*.payback.de/*"
+  ],
+  "action": {
+    "default_popup": "src/entry/popup.html",
+    "default_title": "Payback Activator"
+  },
+  "background": {
+    "service_worker": "src/entry/background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.payback.de/*"],
+      "js": ["src/entry/content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
