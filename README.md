@@ -91,9 +91,11 @@ npm run build:firefox  # Für Firefox
 
 ```
 src/
+├── types/         # TypeScript Typdefinitionen
 ├── core/          # Aktivierungs-Logik (Simulierte Interaktion)
 ├── entry/         # Extension Entry Points
-└── ui/            # Overlay & Styles
+├── ui/            # Overlay & Styles
+└── utils/         # Hilfsfunktionen (Logger)
 ```
 
 </details>
