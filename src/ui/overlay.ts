@@ -5,14 +5,16 @@ export class Overlay {
   private progressBar: HTMLElement;
   private statusElement: HTMLElement;
   private activatedCountElement: HTMLElement;
-  private skippedCountElement: HTMLElement;
+  private alreadyActiveCountElement: HTMLElement;
+  private unavailableCountElement: HTMLElement;
   
   constructor() {
     this.element = this.createWidget();
     this.progressBar = this.element.querySelector('.sota-progress-bar') as HTMLElement;
     this.statusElement = this.element.querySelector('.sota-status') as HTMLElement;
-    this.activatedCountElement = this.element.querySelector('#activator-count') as HTMLElement;
-    this.skippedCountElement = this.element.querySelector('#skipped-count') as HTMLElement;
+    this.activatedCountElement = this.element.querySelector('#activated-count') as HTMLElement;
+    this.alreadyActiveCountElement = this.element.querySelector('#already-active-count') as HTMLElement;
+    this.unavailableCountElement = this.element.querySelector('#unavailable-count') as HTMLElement;
   }
   
   private createWidget(): HTMLElement {
@@ -44,14 +46,18 @@ export class Overlay {
           <div class="sota-progress-bar"></div>
         </div>
         
-        <div class="sota-stats-grid">
-          <div class="sota-stat-item">
-            <div class="sota-stat-value" id="activator-count">0</div>
-            <div class="sota-stat-label">Aktiviert</div>
+        <div class="sota-stats-grid three-cols">
+          <div class="sota-stat-item success">
+            <div class="sota-stat-value" id="activated-count">0</div>
+            <div class="sota-stat-label">Neu aktiviert</div>
           </div>
-          <div class="sota-stat-item">
-            <div class="sota-stat-value" id="skipped-count">0</div>
-            <div class="sota-stat-label">Bereit</div>
+          <div class="sota-stat-item neutral">
+            <div class="sota-stat-value" id="already-active-count">0</div>
+            <div class="sota-stat-label">Bereits aktiv</div>
+          </div>
+          <div class="sota-stat-item warning">
+            <div class="sota-stat-value" id="unavailable-count">0</div>
+            <div class="sota-stat-label">Nicht verfügbar</div>
           </div>
         </div>
       </div>
@@ -80,9 +86,10 @@ export class Overlay {
     }
   }
   
-  public updateStats(activated: number, skipped: number) {
+  public updateStats(activated: number, alreadyActive: number, unavailable: number) {
     this.activatedCountElement.textContent = activated.toString();
-    this.skippedCountElement.textContent = skipped.toString();
+    this.alreadyActiveCountElement.textContent = alreadyActive.toString();
+    this.unavailableCountElement.textContent = unavailable.toString();
   }
   
   public getElement(): HTMLElement {

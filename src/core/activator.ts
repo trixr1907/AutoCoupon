@@ -6,10 +6,14 @@ function log(...args: unknown[]) {
   if (DEBUG) console.log('[Payback Activator]', ...args);
 }
 
+// Coupon status types
+type CouponStatus = 'activated' | 'already-active' | 'unavailable';
+
 export class CouponActivator {
   private overlay: Overlay;
   private activatedCount: number = 0;
-  private skippedCount: number = 0;
+  private alreadyActiveCount: number = 0;
+  private unavailableCount: number = 0;
   private totalCoupons: number = 0;
   private startTime: number = 0;
   
@@ -60,7 +64,7 @@ export class CouponActivator {
       this.totalCoupons = coupons.length;
       log(`✓ Found ${this.totalCoupons} coupons`);
       this.overlay.updateStatus(`${this.totalCoupons} Coupons gefunden`);
-      this.overlay.updateStats(0, 0);
+      this.overlay.updateStats(0, 0, 0);
       this.overlay.updateProgress(20);
       
       // 4. Process each coupon
@@ -89,62 +93,77 @@ export class CouponActivator {
       await this.wait(30);
       
       try {
-        const result = await this.activateSingleCoupon(coupon);
-        if (result) {
-          this.activatedCount++;
-          log(`✓ Activated coupon ${i + 1}`);
-        } else {
-          this.skippedCount++;
+        const status = await this.checkAndActivateCoupon(coupon);
+        
+        switch (status) {
+          case 'activated':
+            this.activatedCount++;
+            log(`✓ Activated coupon ${i + 1}`);
+            break;
+          case 'already-active':
+            this.alreadyActiveCount++;
+            break;
+          case 'unavailable':
+            this.unavailableCount++;
+            break;
         }
-        this.overlay.updateStats(this.activatedCount, this.skippedCount);
+        
+        this.overlay.updateStats(this.activatedCount, this.alreadyActiveCount, this.unavailableCount);
       } catch (e) {
         log(`✗ Failed coupon ${i + 1}:`, e);
-        this.skippedCount++;
+        this.unavailableCount++;
       }
     }
   }
   
-  private async activateSingleCoupon(coupon: Element): Promise<boolean> {
+  private async checkAndActivateCoupon(coupon: Element): Promise<CouponStatus> {
     // Access the coupon's shadow root
     const couponShadow = coupon.shadowRoot;
     if (!couponShadow) {
       log('No shadow root on coupon');
-      return false;
+      return 'unavailable';
     }
     
     // Find pbc-coupon-call-to-action
     const cta = couponShadow.querySelector('pbc-coupon-call-to-action');
     if (!cta) {
       log('No CTA element found');
-      return false;
+      return 'unavailable';
     }
     
     // Access CTA's shadow root
     const ctaShadow = cta.shadowRoot;
     if (!ctaShadow) {
       log('No shadow root on CTA');
-      return false;
+      return 'unavailable';
     }
     
     // Find the activate button
-    // Classes: coupon__activate-button, coupon-call-to-action__button
     const activateBtn = ctaShadow.querySelector('button.coupon__activate-button') as HTMLButtonElement | null;
     
     if (!activateBtn) {
       log('No activate button found');
-      return false;
+      return 'unavailable';
     }
     
-    // Check button text to see if it's already activated or unavailable
-    const btnText = activateBtn.innerText?.toLowerCase() || '';
+    // Check button text to determine status
+    const btnText = activateBtn.innerText?.toLowerCase().trim() || '';
     
-    // Skip if already activated or not available
+    // Already activated
     if (btnText.includes('aktiviert') || 
         btnText.includes('eingelöst') ||
+        btnText.includes('einlösen')) {
+      log('Coupon already activated:', btnText);
+      return 'already-active';
+    }
+    
+    // Not available yet or expired
+    if (btnText.includes('in kürze') ||
         btnText.includes('abgelaufen') ||
-        btnText.includes('in kürze')) {
-      log('Coupon not activatable:', btnText);
-      return false;
+        btnText.includes('nicht verfügbar') ||
+        btnText.includes('beendet')) {
+      log('Coupon unavailable:', btnText);
+      return 'unavailable';
     }
     
     // Check if button is visible and enabled
@@ -152,28 +171,31 @@ export class CouponActivator {
         activateBtn.style.display === 'none' ||
         !activateBtn.offsetParent) {
       log('Button disabled or hidden');
-      return false;
+      return 'unavailable';
     }
     
-    // Click the button!
-    log('Clicking activate button:', btnText);
-    activateBtn.click();
+    // Check if it looks clickable (has "aktivieren" or "jetzt" in text)
+    if (btnText.includes('aktivieren') || btnText.includes('jetzt')) {
+      log('Clicking activate button:', btnText);
+      activateBtn.click();
+      await this.wait(50);
+      return 'activated';
+    }
     
-    // Small delay after click
-    await this.wait(50);
-    
-    return true;
+    // Unknown state - treat as unavailable
+    log('Unknown button state:', btnText);
+    return 'unavailable';
   }
   
   private finish() {
     const duration = ((Date.now() - this.startTime) / 1000).toFixed(1);
     
     if (this.activatedCount > 0) {
-      this.overlay.updateStatus(`${this.activatedCount} aktiviert! (${duration}s)`);
+      this.overlay.updateStatus(`${this.activatedCount} neu aktiviert! (${duration}s)`);
       this.overlay.updateProgress(100, 'success');
       
       setTimeout(() => {
-        if (confirm(`${this.activatedCount} Coupons aktiviert!\n\nSeite neu laden um Änderungen zu sehen?`)) {
+        if (confirm(`${this.activatedCount} Coupons neu aktiviert!\n${this.alreadyActiveCount} waren bereits aktiv.\n${this.unavailableCount} nicht verfügbar.\n\nSeite neu laden?`)) {
           location.reload();
         } else {
           this.overlay.remove(2000);

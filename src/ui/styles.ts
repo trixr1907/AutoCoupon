@@ -119,15 +119,46 @@ export const styles = `
     position: relative;
     z-index: 1;
   }
+  
+  .sota-stats-grid.three-cols {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 
   .sota-stat-item {
     background: rgba(255, 255, 255, 0.03);
     border-radius: 8px;
-    padding: 8px 12px;
+    padding: 8px 6px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+  }
+  
+  .sota-stat-item.success {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+  }
+  
+  .sota-stat-item.success .sota-stat-value {
+    color: #34d399;
+  }
+  
+  .sota-stat-item.neutral {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+  }
+  
+  .sota-stat-item.neutral .sota-stat-value {
+    color: #60a5fa;
+  }
+  
+  .sota-stat-item.warning {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+  }
+  
+  .sota-stat-item.warning .sota-stat-value {
+    color: #fbbf24;
   }
   
   .sota-stat-value {
@@ -137,10 +168,10 @@ export const styles = `
   }
   
   .sota-stat-label {
-    font-size: 11px;
-    color: #64748b;
+    font-size: 9px;
+    color: #94a3b8;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
     margin-top: 2px;
   }
 `;
