@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Payback Activator by Ivo",
-  "version": "2.0.0",
-  "description": "Premium Coupon Aktivator im Synthwave Design",
+  "name": "AutoCoupon by Ivo",
+  "version": "2.1.1",
+  "description": "Browser-Assistenz für Coupon-Aktivierung",
   "permissions": [
     "activeTab",
     "scripting",
@@ -13,7 +13,7 @@
   ],
   "action": {
     "default_popup": "src/entry/popup.html",
-    "default_title": "Payback Activator"
+    "default_title": "AutoCoupon"
   },
   "background": {
     "service_worker": "src/entry/background.js",

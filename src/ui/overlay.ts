@@ -7,6 +7,8 @@ export class Overlay {
   private activatedCountElement: HTMLElement;
   private alreadyActiveCountElement: HTMLElement;
   private unavailableCountElement: HTMLElement;
+  private turboToggle: HTMLInputElement;
+  private startBtn: HTMLButtonElement;
   
   constructor() {
     this.element = this.createWidget();
@@ -15,6 +17,17 @@ export class Overlay {
     this.activatedCountElement = this.element.querySelector('#activated-count') as HTMLElement;
     this.alreadyActiveCountElement = this.element.querySelector('#already-active-count') as HTMLElement;
     this.unavailableCountElement = this.element.querySelector('#unavailable-count') as HTMLElement;
+    this.turboToggle = this.element.querySelector('#turbo-mode-toggle') as HTMLInputElement;
+    this.startBtn = this.element.querySelector('#start-btn') as HTMLButtonElement;
+
+    this.turboToggle.addEventListener('change', () => {
+      const label = this.element.querySelector('#turbo-label');
+      if (this.turboToggle.checked) {
+        label?.classList.add('active');
+      } else {
+        label?.classList.remove('active');
+      }
+    });
   }
   
   private createWidget(): HTMLElement {
@@ -42,6 +55,16 @@ export class Overlay {
           </div>
         </div>
         
+        <div class="sota-toggle-container">
+          <span class="sota-toggle-label" id="turbo-label">⚡ Turbo (Risiko)</span>
+          <label class="sota-toggle">
+            <input type="checkbox" id="turbo-mode-toggle">
+            <span class="sota-slider"></span>
+          </label>
+        </div>
+
+        <button id="start-btn" class="sota-btn">🚀 Aktivierung Starten</button>
+
         <div class="sota-progress-container">
           <div class="sota-progress-bar"></div>
         </div>
@@ -59,6 +82,13 @@ export class Overlay {
             <div class="sota-stat-value" id="unavailable-count">0</div>
             <div class="sota-stat-label">Nicht verfügbar</div>
           </div>
+        </div>
+
+
+        
+        <div class="sota-disclaimer">
+          Privates Assistenz-Tool. Nutzung auf eigene Verantwortung.<br>
+          Nicht für kommerzielle Zwecke.
         </div>
       </div>
     `;
@@ -108,5 +138,19 @@ export class Overlay {
         this.element.parentNode.removeChild(this.element);
       }
     }, 500);
+  }
+
+  public isTurboMode(): boolean {
+    return this.turboToggle.checked;
+  }
+
+  public waitForStart(): Promise<void> {
+    return new Promise(resolve => {
+      this.startBtn.classList.add('visible');
+      this.startBtn.onclick = () => {
+        this.startBtn.classList.remove('visible');
+        resolve();
+      };
+    });
   }
 }

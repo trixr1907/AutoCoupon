@@ -1,4 +1,4 @@
-# 🎯 Payback Coupon Activator (Assistenz-Edition)
+# 🎯 AutoCoupon
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Version](https://img.shields.io/badge/version-2.1.0-green.svg)
@@ -8,14 +8,14 @@
 > [!CAUTION]
 > **RECHTLICHER HINWEIS / HAFTUNGSAUSSCHLUSS**
 > 
-> ⚠️ **Dieses Projekt ist ein rein privates Hobbyprojekt und steht in KEINER Verbindung zur PAYBACK GmbH oder deren Partnern.**
+> ⚠️ **Dieses Projekt ist ein rein privates Hobbyprojekt und steht in KEINER Verbindung zu Bonusprogramm-Anbietern oder deren Partnern.**
 > 
 > Dieses Tool ist ein reines **Browser-Hilfsmittel (Accessibility Tool)** für Nutzer, die Schwierigkeiten haben, hunderte kleine Buttons manuell zu klicken (z.B. aufgrund motorischer Einschränkungen).
 >
 > - **Die Nutzung erfolgt ausdrücklich auf eigene Gefahr.**
 > - Es werden keine Sicherheitsmechanismen umgangen. Das Tool klickt lediglich Buttons im sichtbaren Browser-Fenster, so wie es ein Mensch tun würde.
-> - **Durch die Nutzung dieses Tools verstoßen Sie möglicherweise gegen die Allgemeinen Geschäftsbedingungen (AGB) von Payback.**
-> - Der Entwickler übernimmt **keine Haftung** für gesperrte Accounts, verlorene Punkte oder sonstige Schäden, die durch die Nutzung entstehen.
+> - **Durch die Nutzung dieses Tools verstoßen Sie möglicherweise gegen die AGB des jeweiligen Anbieters.**
+> - Der Entwickler übernimmt **keine Haftung** für gesperrte Accounts, verlorene Punkte oder sonstige Schäden.
 
 ## ✨ Features
 
@@ -32,14 +32,14 @@
 
 ### Chrome / Edge / Brave
 
-1. **[⬇️ Download Chrome Version](https://github.com/trixr1907/Payback-Coupon/releases/latest/download/Payback-Activator-Chrome.zip)**
+1. **[⬇️ Download Chrome Version](https://github.com/trixr1907/Payback-Coupon/releases/latest/download/AutoCoupon-Chrome.zip)**
 2. ZIP entpacken
 3. `chrome://extensions` öffnen → **Entwicklermodus** aktivieren
 4. **"Entpackte Erweiterung laden"** → Entpackten Ordner wählen
 
 ### Firefox
 
-1. **[⬇️ Download Firefox Version](https://github.com/trixr1907/Payback-Coupon/releases/latest/download/Payback-Activator-Firefox.zip)**
+1. **[⬇️ Download Firefox Version](https://github.com/trixr1907/Payback-Coupon/releases/latest/download/AutoCoupon-Firefox.zip)**
 2. ZIP entpacken
 3. `about:debugging#/runtime/this-firefox` öffnen
 4. **"Temporäres Add-on laden..."** → `manifest.json` im Ordner wählen
@@ -48,11 +48,19 @@
 
 ## 📖 Nutzung
 
-1. Gehe auf [payback.de/coupons](https://www.payback.de/coupons).
+1. Gehe auf die Coupon-Seite deines Bonusprogramms (z.B. payback.de/coupons).
 2. Logge dich ein.
-3. Klicke auf das **Payback Activator Icon** in deiner Toolbar.
+3. Klicke auf das **AutoCoupon Icon** in deiner Toolbar.
 4. Das Tool beginnt, die Coupons in menschlicher Geschwindigkeit zu aktivieren.
 5. Lehne dich zurück! ☕
+
+---
+
+## ☕ Unterstützen
+
+Gefällt dir das Projekt? Dann unterstütze mich gerne!
+
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20me-ff5e5b?logo=ko-fi&logoColor=white)](https://ko-fi.com/ivotech)
 
 ---
 
@@ -101,4 +109,4 @@ Beiträge zur Verbesserung der Sicherheit und Accessibility sind willkommen.
 MIT License - siehe [LICENSE](LICENSE) Datei.
 
 ---
-*Made with ❤️ for Accessibility*
+*Made with ❤️ by [Ivo Tech](https://ivo-tech.com) for Accessibility*

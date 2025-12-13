@@ -1,8 +1,8 @@
 {
-  "name": "payback-coupon-activator",
-  "version": "2.0.0",
+  "name": "autocoupon",
+  "version": "2.1.1",
   "type": "module",
-  "description": "SOTA Payback Coupon Activator - Browser Extension",
+  "description": "AutoCoupon - Browser Extension für Coupon-Aktivierung",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

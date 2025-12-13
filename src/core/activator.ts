@@ -3,7 +3,7 @@ import { Overlay } from '../ui/overlay';
 // Debug mode - disable in production
 const DEBUG = true;
 function log(...args: unknown[]) {
-  if (DEBUG) console.log('[Payback Activator]', ...args);
+  if (DEBUG) console.log('[AutoCoupon]', ...args);
 }
 
 // Coupon status types
@@ -63,9 +63,14 @@ export class CouponActivator {
       
       this.totalCoupons = coupons.length;
       log(`✓ Found ${this.totalCoupons} coupons`);
-      this.overlay.updateStatus(`${this.totalCoupons} Coupons gefunden`);
+      this.overlay.updateStatus(`${this.totalCoupons} Coupons gefunden! Bereit?`);
       this.overlay.updateStats(0, 0, 0);
       this.overlay.updateProgress(20);
+      
+      // WAIT FOR USER INTERACTION
+      await this.overlay.waitForStart();
+      
+      this.overlay.updateStatus('Starte Aktivierung...');
       
       // 4. Process each coupon
       await this.processCoupons(Array.from(coupons));
@@ -89,8 +94,12 @@ export class CouponActivator {
       this.overlay.updateProgress(progress);
       this.overlay.updateStatus(`Prüfe ${i + 1} von ${this.totalCoupons}...`);
       
-      // Small delay to not overwhelm the page
-      await this.wait(30);
+      // Determine Delay based on Turbo Mode
+      if (this.overlay.isTurboMode()) {
+        await this.wait(30); // Fast / Risky
+      } else {
+        await this.waitHuman(700, 1500); // Safe / Human
+      }
       
       try {
         const status = await this.checkAndActivateCoupon(coupon);
@@ -99,6 +108,11 @@ export class CouponActivator {
           case 'activated':
             this.activatedCount++;
             log(`✓ Activated coupon ${i + 1}`);
+            
+            // Extra pause after successful click
+            if (!this.overlay.isTurboMode()) {
+              await this.waitHuman(500, 1000);
+            }
             break;
           case 'already-active':
             this.alreadyActiveCount++;
@@ -178,7 +192,6 @@ export class CouponActivator {
     if (btnText.includes('aktivieren') || btnText.includes('jetzt')) {
       log('Clicking activate button:', btnText);
       activateBtn.click();
-      await this.wait(50);
       return 'activated';
     }
     
@@ -209,6 +222,11 @@ export class CouponActivator {
   }
   
   private wait(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  
+  private waitHuman(min: number, max: number): Promise<void> {
+    const ms = Math.floor(Math.random() * (max - min + 1) + min);
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
