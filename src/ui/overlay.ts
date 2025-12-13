@@ -80,7 +80,7 @@ export class Overlay {
           </div>
           <div class="sota-stat-item warning">
             <div class="sota-stat-value" id="unavailable-count">0</div>
-            <div class="sota-stat-label">Nicht verfügbar</div>
+            <div class="sota-stat-label">Noch nicht verfügbar</div>
           </div>
         </div>
 

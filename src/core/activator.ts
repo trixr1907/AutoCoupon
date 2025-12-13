@@ -138,6 +138,22 @@ export class CouponActivator {
       return 'unavailable';
     }
     
+    // Check for visual indicators first (green checkmark = already active)
+    const checkmark = couponShadow.querySelector('.coupon__checkmark, .checkmark, [class*="check"], [class*="aktiv"]');
+    const hasGreenCheck = couponShadow.querySelector('svg[fill="green"], .icon--check, .icon-check');
+    
+    if (checkmark || hasGreenCheck) {
+      log('Found green checkmark - coupon already active');
+      return 'already-active';
+    }
+
+    // Also check the coupon element itself for status classes
+    const couponClasses = coupon.className || '';
+    if (couponClasses.includes('activated') || couponClasses.includes('aktiv')) {
+      log('Coupon has activated class');
+      return 'already-active';
+    }
+    
     // Find pbc-coupon-call-to-action
     const cta = couponShadow.querySelector('pbc-coupon-call-to-action');
     if (!cta) {
@@ -156,47 +172,73 @@ export class CouponActivator {
     const activateBtn = ctaShadow.querySelector('button.coupon__activate-button') as HTMLButtonElement | null;
     
     if (!activateBtn) {
-      log('No activate button found');
+      // Maybe it's a different button type - check for any button
+      const anyButton = ctaShadow.querySelector('button') as HTMLButtonElement | null;
+      if (!anyButton) {
+        log('No button found at all');
+        return 'unavailable';
+      }
+    }
+    
+    const button = activateBtn || ctaShadow.querySelector('button') as HTMLButtonElement;
+    if (!button) {
       return 'unavailable';
     }
     
     // Check button text to determine status
-    const btnText = activateBtn.innerText?.toLowerCase().trim() || '';
+    const btnText = button.innerText?.toLowerCase().trim() || '';
     
-    // Already activated
+    // Also get full coupon text for additional context
+    const fullCouponText = (couponShadow.textContent || '').toLowerCase();
+    
+    // --- ALREADY ACTIVATED ---
+    // "Aktiviert" text or green checkmark indicators
     if (btnText.includes('aktiviert') || 
         btnText.includes('eingelöst') ||
-        btnText.includes('einlösen')) {
+        btnText.includes('einlösen') ||
+        fullCouponText.includes('ist aktiviert') ||
+        fullCouponText.includes('bereits aktiviert')) {
       log('Coupon already activated:', btnText);
       return 'already-active';
     }
     
-    // Not available yet or expired
+    // --- NOT YET AVAILABLE ("In Kürze") ---
+    // These are upcoming coupons - count as "noch nicht verfügbar"
     if (btnText.includes('in kürze') ||
-        btnText.includes('abgelaufen') ||
+        btnText.includes('in kurze') ||
+        btnText.includes('demnächst') ||
+        btnText.includes('bald verfügbar') ||
+        fullCouponText.includes('in kürze')) {
+      log('Coupon not yet available (In Kürze):', btnText);
+      return 'unavailable'; // This will be counted as "Noch nicht verfügbar"
+    }
+    
+    // --- EXPIRED or TRULY UNAVAILABLE ---
+    if (btnText.includes('abgelaufen') ||
         btnText.includes('nicht verfügbar') ||
-        btnText.includes('beendet')) {
-      log('Coupon unavailable:', btnText);
+        btnText.includes('beendet') ||
+        btnText.includes('vorbei')) {
+      log('Coupon expired/unavailable:', btnText);
       return 'unavailable';
     }
     
     // Check if button is visible and enabled
-    if (activateBtn.disabled || 
-        activateBtn.style.display === 'none' ||
-        !activateBtn.offsetParent) {
+    if (button.disabled || 
+        button.style.display === 'none' ||
+        !button.offsetParent) {
       log('Button disabled or hidden');
       return 'unavailable';
     }
     
-    // Check if it looks clickable (has "aktivieren" or "jetzt" in text)
+    // --- CAN BE ACTIVATED ---
     if (btnText.includes('aktivieren') || btnText.includes('jetzt')) {
       log('Clicking activate button:', btnText);
-      activateBtn.click();
+      button.click();
       return 'activated';
     }
     
-    // Unknown state - treat as unavailable
-    log('Unknown button state:', btnText);
+    // Unknown state - log for debugging
+    log('Unknown button state:', btnText, '| Full text:', fullCouponText.substring(0, 100));
     return 'unavailable';
   }
   
