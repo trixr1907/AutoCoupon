@@ -243,14 +243,71 @@
         border-top: 1px solid rgba(255,255,255,0.05);
         padding-top: 10px;
         text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
       }
       
-      .footer-tag {
+      .footer-link {
+        font-size: 10px;
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 600;
+        letter-spacing: 1px;
+        transition: color 0.2s;
+      }
+      
+      .footer-link:hover {
+        color: #00f3ff;
+      }
+      
+      .footer-version {
         font-size: 9px;
         color: #475569;
         font-family: monospace;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
+      }
+      
+      /* Support Links */
+      .support-links {
+        display: flex;
+        gap: 8px;
+      }
+      
+      .support-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 10px 8px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      
+      .support-btn.donate {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+      }
+      
+      .support-btn.donate:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+      }
+      
+      .support-btn.website {
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(0, 243, 255, 0.3);
+        color: #00f3ff;
+      }
+      
+      .support-btn.website:hover {
+        background: rgba(0, 243, 255, 0.1);
+        border-color: rgba(0, 243, 255, 0.5);
       }
     </style>
   </head>
@@ -326,11 +383,23 @@
         </div>
       </div>
 
+      <!-- Support Links -->
+      <div class="support-links">
+        <a href="https://ko-fi.com/ivotech" target="_blank" class="support-btn donate">
+          ☕ Unterstützen
+        </a>
+        <a href="https://ivo-tech.com" target="_blank" class="support-btn website">
+          🌐 ivo-tech.com
+        </a>
+      </div>
+
       <!-- Footer -->
       <div class="footer">
-        <span class="footer-tag">IVO TECH EDITION v2.0</span>
+        <a href="https://ivo-tech.com" target="_blank" class="footer-link">IVO TECH</a>
+        <span class="footer-version">v2.0</span>
       </div>
     </div>
     <script type="module" src="./popup.ts"></script>
 </body>
 </html>
+
