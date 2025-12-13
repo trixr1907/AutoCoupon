@@ -1,26 +1,52 @@
-import { CouponActivator } from '../core/activator';
+/**
+ * AutoCoupon - Content Script
+ * Empfängt Nachrichten vom Popup und startet die Aktivierung
+ */
 
-// Listener for messages from Popup
-chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
-  if (request.action === 'START_ACTIVATION') {
-    
-    // Check if we are already running to avoid double execution
-    if ((window as any)._paybackActivatorRunning) {
-      console.log('Activator already running.');
-      return;
+import { CouponActivator } from '../core/activator';
+import { MessageAction, ExtensionMessage, ExtensionResponse } from '../types';
+import { logger } from '../utils/logger';
+
+// Flag um doppelte Ausführung zu verhindern
+let isRunning = false;
+
+/**
+ * Startet die Coupon-Aktivierung
+ */
+async function startActivation(): Promise<void> {
+  if (isRunning) {
+    logger.warn('Aktivierung läuft bereits.');
+    return;
+  }
+  
+  isRunning = true;
+  logger.info('🚀 AutoCoupon gestartet via Extension');
+  
+  try {
+    const activator = new CouponActivator();
+    await activator.start();
+  } catch (e) {
+    logger.error('Aktivierungsfehler:', e);
+  } finally {
+    isRunning = false;
+  }
+}
+
+/**
+ * Message Listener für Extension-Kommunikation
+ */
+chrome.runtime.onMessage.addListener(
+  (
+    request: ExtensionMessage,
+    _sender: chrome.runtime.MessageSender,
+    sendResponse: (response: ExtensionResponse) => void
+  ) => {
+    if (request.action === MessageAction.START_ACTIVATION) {
+      startActivation();
+      sendResponse({ status: 'started' });
     }
     
-    (window as any)._paybackActivatorRunning = true;
-    console.log('🚀 SOTA Payback Activator started via Extension');
-    
-    const activator = new CouponActivator();
-    activator.start().then(() => {
-      (window as any)._paybackActivatorRunning = false;
-    }).catch(e => {
-        console.error(e);
-        (window as any)._paybackActivatorRunning = false;
-    });
-
-    sendResponse({ status: 'started' });
+    // Return true um asynchrone Response zu ermöglichen
+    return true;
   }
-});
+);

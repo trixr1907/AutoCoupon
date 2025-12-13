@@ -1,114 +1,113 @@
-import { styles } from './styles';
+/**
+ * AutoCoupon - Overlay Widget
+ * UI-Komponente für die Statusanzeige während der Aktivierung
+ */
 
+import { overlayStyles } from './styles';
+import { createWidgetHTML } from './templates';
+import { ProgressType } from '../types';
+import { UI } from '../core/config';
+
+/**
+ * Overlay Widget Klasse
+ */
 export class Overlay {
-  private element: HTMLElement;
-  private progressBar: HTMLElement;
-  private statusElement: HTMLElement;
-  private activatedCountElement: HTMLElement;
-  private alreadyActiveCountElement: HTMLElement;
-  private unavailableCountElement: HTMLElement;
-  private turboToggle: HTMLInputElement;
-  private startBtn: HTMLButtonElement;
+  private readonly element: HTMLElement;
+  private readonly progressBar: HTMLElement;
+  private readonly statusElement: HTMLElement;
+  private readonly activatedCountElement: HTMLElement;
+  private readonly alreadyActiveCountElement: HTMLElement;
+  private readonly unavailableCountElement: HTMLElement;
+  private readonly turboToggle: HTMLInputElement;
+  private readonly startBtn: HTMLButtonElement;
   
   constructor() {
     this.element = this.createWidget();
-    this.progressBar = this.element.querySelector('.sota-progress-bar') as HTMLElement;
-    this.statusElement = this.element.querySelector('.sota-status') as HTMLElement;
-    this.activatedCountElement = this.element.querySelector('#activated-count') as HTMLElement;
-    this.alreadyActiveCountElement = this.element.querySelector('#already-active-count') as HTMLElement;
-    this.unavailableCountElement = this.element.querySelector('#unavailable-count') as HTMLElement;
-    this.turboToggle = this.element.querySelector('#turbo-mode-toggle') as HTMLInputElement;
-    this.startBtn = this.element.querySelector('#start-btn') as HTMLButtonElement;
+    
+    // Element-Referenzen cachen
+    this.progressBar = this.querySelector('.sota-progress-bar');
+    this.statusElement = this.querySelector('.sota-status');
+    this.activatedCountElement = this.querySelector('#activated-count');
+    this.alreadyActiveCountElement = this.querySelector('#already-active-count');
+    this.unavailableCountElement = this.querySelector('#unavailable-count');
+    this.turboToggle = this.querySelector('#turbo-mode-toggle') as HTMLInputElement;
+    this.startBtn = this.querySelector('#start-btn') as HTMLButtonElement;
 
-    this.turboToggle.addEventListener('change', () => {
-      const label = this.element.querySelector('#turbo-label');
-      if (this.turboToggle.checked) {
-        label?.classList.add('active');
-      } else {
-        label?.classList.remove('active');
-      }
-    });
+    this.initTurboToggle();
+  }
+
+  /**
+   * Helper für querySelector mit Fehlerbehandlung
+   */
+  private querySelector<T extends HTMLElement>(selector: string): T {
+    const element = this.element.querySelector(selector) as T | null;
+    if (!element) {
+      throw new Error(`Element nicht gefunden: ${selector}`);
+    }
+    return element;
   }
   
+  /**
+   * Erstellt das Widget im DOM
+   */
   private createWidget(): HTMLElement {
-    // Remove old instance if exists
-    const oldWidget = document.getElementById('payback-sota-widget');
+    // Alte Instanz entfernen
+    const oldWidget = document.getElementById(UI.WIDGET_ID);
     if (oldWidget) oldWidget.remove();
     
-    // Inject styles
-    if (!document.getElementById('payback-sota-styles')) {
-      const styleEl = document.createElement('style');
-      styleEl.id = 'payback-sota-styles';
-      styleEl.textContent = styles;
-      document.head.appendChild(styleEl);
-    }
+    // Styles injizieren
+    this.injectStyles();
     
+    // Widget erstellen
     const widget = document.createElement('div');
-    widget.id = 'payback-sota-widget';
-    widget.innerHTML = `
-      <div class="sota-card">
-        <div class="sota-header">
-          <div class="sota-icon">🎯</div>
-          <div class="sota-title-group">
-            <div class="sota-title">Payback Activator</div>
-            <div class="sota-status">Initialisierung...</div>
-          </div>
-        </div>
-        
-        <div class="sota-toggle-container">
-          <span class="sota-toggle-label" id="turbo-label">⚡ Turbo (Risiko)</span>
-          <label class="sota-toggle">
-            <input type="checkbox" id="turbo-mode-toggle">
-            <span class="sota-slider"></span>
-          </label>
-        </div>
-
-        <button id="start-btn" class="sota-btn">🚀 Aktivierung Starten</button>
-
-        <div class="sota-progress-container">
-          <div class="sota-progress-bar"></div>
-        </div>
-        
-        <div class="sota-stats-grid three-cols">
-          <div class="sota-stat-item success">
-            <div class="sota-stat-value" id="activated-count">0</div>
-            <div class="sota-stat-label">Neu aktiviert</div>
-          </div>
-          <div class="sota-stat-item neutral">
-            <div class="sota-stat-value" id="already-active-count">0</div>
-            <div class="sota-stat-label">Bereits aktiv</div>
-          </div>
-          <div class="sota-stat-item warning">
-            <div class="sota-stat-value" id="unavailable-count">0</div>
-            <div class="sota-stat-label">Noch nicht verfügbar</div>
-          </div>
-        </div>
-
-
-        
-        <div class="sota-disclaimer">
-          Privates Assistenz-Tool. Nutzung auf eigene Verantwortung.<br>
-          Nicht für kommerzielle Zwecke.
-        </div>
-      </div>
-    `;
+    widget.id = UI.WIDGET_ID;
+    widget.innerHTML = createWidgetHTML();
     
     document.body.appendChild(widget);
     
-    // Trigger animation next frame
+    // Animation triggern
     requestAnimationFrame(() => {
       widget.classList.add('visible');
     });
     
     return widget;
   }
+
+  /**
+   * Injiziert die Styles in den DOM
+   */
+  private injectStyles(): void {
+    if (document.getElementById(UI.STYLES_ID)) return;
+    
+    const styleEl = document.createElement('style');
+    styleEl.id = UI.STYLES_ID;
+    styleEl.textContent = overlayStyles;
+    document.head.appendChild(styleEl);
+  }
+
+  /**
+   * Initialisiert den Turbo-Toggle
+   */
+  private initTurboToggle(): void {
+    this.turboToggle.addEventListener('change', () => {
+      const label = this.element.querySelector('#turbo-label');
+      label?.classList.toggle('active', this.turboToggle.checked);
+    });
+  }
   
-  public updateStatus(text: string) {
+  /**
+   * Aktualisiert den Status-Text
+   */
+  public updateStatus(text: string): void {
     this.statusElement.textContent = text;
   }
   
-  public updateProgress(percent: number, type: 'normal' | 'error' | 'success' = 'normal') {
-    this.progressBar.style.width = `${Math.max(0, Math.min(100, percent))}%`;
+  /**
+   * Aktualisiert den Fortschrittsbalken
+   */
+  public updateProgress(percent: number, type: ProgressType = 'normal'): void {
+    const clampedPercent = Math.max(0, Math.min(100, percent));
+    this.progressBar.style.width = `${clampedPercent}%`;
     
     this.progressBar.classList.remove('error', 'success');
     if (type !== 'normal') {
@@ -116,34 +115,48 @@ export class Overlay {
     }
   }
   
-  public updateStats(activated: number, alreadyActive: number, unavailable: number) {
-    this.activatedCountElement.textContent = activated.toString();
-    this.alreadyActiveCountElement.textContent = alreadyActive.toString();
-    this.unavailableCountElement.textContent = unavailable.toString();
+  /**
+   * Aktualisiert die Statistik-Anzeige
+   */
+  public updateStats(activated: number, alreadyActive: number, unavailable: number): void {
+    this.activatedCountElement.textContent = String(activated);
+    this.alreadyActiveCountElement.textContent = String(alreadyActive);
+    this.unavailableCountElement.textContent = String(unavailable);
   }
   
+  /**
+   * Gibt das Root-Element zurück
+   */
   public getElement(): HTMLElement {
     return this.element;
   }
   
-  public remove(delay: number = 0) {
+  /**
+   * Entfernt das Widget aus dem DOM
+   */
+  public remove(delay: number = 0): void {
     if (delay > 0) {
       setTimeout(() => this.remove(0), delay);
       return;
     }
     
     this.element.classList.remove('visible');
+    
     setTimeout(() => {
-      if (this.element.parentNode) {
-        this.element.parentNode.removeChild(this.element);
-      }
-    }, 500);
+      this.element.parentNode?.removeChild(this.element);
+    }, UI.REMOVE_DELAY_MS);
   }
 
+  /**
+   * Prüft ob der Turbo-Modus aktiviert ist
+   */
   public isTurboMode(): boolean {
     return this.turboToggle.checked;
   }
 
+  /**
+   * Wartet auf den Start-Button-Klick
+   */
   public waitForStart(): Promise<void> {
     return new Promise(resolve => {
       this.startBtn.classList.add('visible');

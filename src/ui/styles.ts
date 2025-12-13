@@ -1,13 +1,18 @@
-export const styles = `
+/**
+ * AutoCoupon - Overlay Styles
+ * CSS für das Overlay Widget als String (für Injection in die Seite)
+ */
+
+export const overlayStyles = `
   #payback-sota-widget {
     position: fixed;
-    top: 100px; /* Moved down to avoid header overlap */
+    top: 100px;
     right: 20px;
-    z-index: 2147483647 !important; /* Ensure absolute top */
+    z-index: 2147483647 !important;
     font-family: 'Segoe UI', 'Roboto', sans-serif;
     color: white;
-    width: 380px; /* Match card width */
-    pointer-events: auto; /* Force enable clicks */
+    width: 380px;
+    pointer-events: auto;
     opacity: 0;
     transform: translateY(-20px);
     transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -20,7 +25,7 @@ export const styles = `
 
   .sota-card {
     background: #000000 !important;
-    border: 3px solid #ffffff !important; /* Maximum contrast white border */
+    border: 3px solid #ffffff !important;
     border-radius: 16px;
     padding: 24px;
     box-shadow: 0 10px 50px rgba(0,0,0,0.9);
@@ -30,7 +35,6 @@ export const styles = `
     min-width: 380px;
   }
 
-  /* Glow effect */
   .sota-card::before {
     content: '';
     position: absolute;
@@ -70,20 +74,20 @@ export const styles = `
 
   .sota-title {
     font-weight: 700;
-    font-size: 18px; /* Larger title */
+    font-size: 18px;
     color: #ffffff;
     margin-bottom: 4px;
     letter-spacing: -0.5px;
   }
 
   .sota-status {
-    font-size: 14px; /* Larger status */
-    color: #ffffff; /* High contrast white */
+    font-size: 14px;
+    color: #ffffff;
     font-weight: 600;
   }
 
   .sota-progress-container {
-    height: 8px; /* Thicker bar */
+    height: 8px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
     overflow: hidden;
@@ -92,7 +96,22 @@ export const styles = `
     z-index: 1;
   }
 
-  /* Toggle Switch */
+  .sota-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #0ea5e9, #3b82f6);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+
+  .sota-progress-bar.success {
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+  }
+
+  .sota-progress-bar.error {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+  }
+
   .sota-toggle-container {
     display: flex;
     align-items: center;
@@ -104,12 +123,12 @@ export const styles = `
     padding: 8px 12px;
     border-radius: 8px;
     position: relative;
-    z-index: 10; /* Ensure above glow */
+    z-index: 10;
   }
 
   .sota-toggle-label {
     font-size: 14px;
-    color: #ffffff; /* High contrast white */
+    color: #ffffff;
     font-weight: 700;
   }
 
@@ -121,19 +140,19 @@ export const styles = `
   .sota-toggle {
     position: relative;
     display: inline-block;
-    width: 36px; /* Slightly larger */
+    width: 36px;
     height: 20px;
     pointer-events: auto;
   }
 
   .sota-toggle input {
-    position: absolute; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    opacity: 0; 
-    z-index: 20; 
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    z-index: 20;
     cursor: pointer;
     margin: 0;
   }
@@ -145,7 +164,7 @@ export const styles = `
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(255, 255, 255, 0.15); /* Keep distinct */
+    background-color: rgba(255, 255, 255, 0.15);
     transition: .4s;
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -174,23 +193,22 @@ export const styles = `
     box-shadow: 0 0 8px #f59e0b;
   }
 
-  /* Start Button */
   .sota-btn {
     background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
     border: none;
     border-radius: 8px;
-    padding: 10px 16px; /* Larger touch area */
+    padding: 10px 16px;
     color: white;
     font-weight: 600;
-    font-size: 14px; /* Increased from 13px */
+    font-size: 14px;
     cursor: pointer;
     width: 100%;
     margin-bottom: 16px;
     transition: all 0.2s ease;
     box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
     font-family: inherit;
-    display: none; /* Hidden by default */
-    pointer-events: auto; /* Ensure clickable */
+    display: none;
+    pointer-events: auto;
     position: relative;
     z-index: 10;
   }
@@ -210,7 +228,6 @@ export const styles = `
     animation: fadeIn 0.3s ease;
   }
 
-  /* Stats Grid */
   .sota-stats-grid {
     display: flex;
     justify-content: space-between;
@@ -218,7 +235,7 @@ export const styles = `
     margin-top: 16px;
     margin-bottom: 16px;
   }
-  
+
   .sota-stat-item {
     background: rgba(255, 255, 255, 0.1);
     padding: 10px 6px;
@@ -242,6 +259,13 @@ export const styles = `
     font-weight: 700;
     margin-top: 2px;
     display: block;
+  }
+
+  .sota-disclaimer {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    line-height: 1.4;
   }
 
   @keyframes fadeIn {

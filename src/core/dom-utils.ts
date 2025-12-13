@@ -1,22 +1,28 @@
 /**
- * DOM Utility functions for safely traversing Shadow DOMs
+ * AutoCoupon - DOM Utilities
+ * Hilfsfunktionen für die sichere Traversierung von Shadow DOMs
  */
 
+type SearchRoot = Element | Document | ShadowRoot;
+
 /**
- * Finds all elements matching a selector, even within open Shadow Roots.
- * This is an expensive operation and should be used sparingly.
+ * Findet alle Elemente die einem Selector entsprechen, auch in Shadow DOMs.
+ * Dies ist eine teure Operation und sollte sparsam verwendet werden.
  */
-export function querySelectorAllDeep(selector: string, root: Element | Document | ShadowRoot = document): Element[] {
+export function querySelectorAllDeep(
+  selector: string,
+  root: SearchRoot = document
+): Element[] {
   const results: Element[] = [];
   
-  // Check current level
+  // Aktuelle Ebene prüfen
   const currents = root.querySelectorAll(selector);
-  currents.forEach(el => results.push(el));
+  currents.forEach((el: Element) => results.push(el));
   
-  // Traverse all elements at this level to find shadow roots
+  // Alle Elemente auf dieser Ebene durchsuchen
   const allElements = root.querySelectorAll('*');
   
-  allElements.forEach(el => {
+  allElements.forEach((el: Element) => {
     if (el.shadowRoot) {
       results.push(...querySelectorAllDeep(selector, el.shadowRoot));
     }
@@ -26,29 +32,35 @@ export function querySelectorAllDeep(selector: string, root: Element | Document 
 }
 
 /**
- * Tries to find an element within a specific shadow root path
- * @param path Array of selectors to traverse down through shadow roots
+ * Versucht ein Element in einem spezifischen Shadow Root Pfad zu finden
+ * @param path Array von Selektoren zum Durchtraversieren
  */
-export function findInShadowPath(root: Element | Document, path: string[]): Element | null {
-  let current: Element | Document | ShadowRoot | null = root;
+export function findInShadowPath(
+  root: SearchRoot,
+  path: string[]
+): Element | null {
+  let current: SearchRoot | null = root;
   
   for (const selector of path) {
     if (!current) return null;
     
-    // If current is an element and has shadowRoot, switch to it
-    if ('shadowRoot' in current && (current as Element).shadowRoot) {
-      current = (current as Element).shadowRoot;
+    // Wenn current ein Element mit shadowRoot ist, wechsle dorthin
+    if ('shadowRoot' in current) {
+      const element = current as Element;
+      if (element.shadowRoot) {
+        current = element.shadowRoot;
+      }
     }
     
     if (!current) return null;
     current = current.querySelector(selector);
   }
   
-  return current as Element;
+  return current as Element | null;
 }
 
 /**
- * Checks if an element is visible
+ * Prüft ob ein Element sichtbar ist
  */
 export function isVisible(elem: Element): boolean {
   if (!(elem instanceof HTMLElement)) return false;
@@ -56,20 +68,24 @@ export function isVisible(elem: Element): boolean {
 }
 
 /**
- * Waits for an element to appear in the DOM (searching deep in Shadow DOMs)
- * @param selector The selector to search for
- * @param timeoutMs Maximum time to wait in ms
- * @param root The root element to start searching from
+ * Wartet auf ein Element im DOM (inkl. Shadow DOMs)
+ * @param selector Der Selector zum Suchen
+ * @param timeoutMs Maximale Wartezeit in ms
+ * @param root Das Root-Element zum Suchen
  */
-export function waitForElementDeep(selector: string, timeoutMs: number = 5000, root: Element | Document = document): Promise<Element | null> {
+export function waitForElementDeep(
+  selector: string,
+  timeoutMs: number = 5000,
+  root: SearchRoot = document
+): Promise<Element | null> {
   return new Promise((resolve) => {
-    // 1. Try immediately
+    // 1. Sofort versuchen
     const initialFind = querySelectorAllDeep(selector, root);
     if (initialFind.length > 0) {
       return resolve(initialFind[0]);
     }
 
-    // 2. Poll every 200ms
+    // 2. Alle 200ms prüfen
     const intervalId = setInterval(() => {
       const el = querySelectorAllDeep(selector, root);
       if (el.length > 0) {
