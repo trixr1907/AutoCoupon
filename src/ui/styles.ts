@@ -268,6 +268,75 @@ export const overlayStyles = `
     line-height: 1.4;
   }
 
+  /* Support-Bereich */
+  .sota-support-section {
+    display: none;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(14, 165, 233, 0.1) 100%);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+  }
+
+  .sota-support-section.visible {
+    display: block;
+  }
+
+  .sota-support-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 8px;
+  }
+
+  .sota-support-text {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 12px;
+  }
+
+  .sota-support-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .sota-support-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .sota-support-btn.kofi {
+    background: linear-gradient(135deg, #ff5e5b 0%, #ff3333 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 94, 91, 0.3);
+  }
+
+  .sota-support-btn.kofi:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 94, 91, 0.4);
+  }
+
+  .sota-support-btn.website {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+  }
+
+  .sota-support-btn.website:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-5px); }
     to { opacity: 1; transform: translateY(0); }

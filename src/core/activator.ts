@@ -174,29 +174,20 @@ export class CouponActivator {
     const duration = ((Date.now() - this.startTime) / 1000).toFixed(1);
     
     if (this.stats.activated > 0) {
-      this.overlay.updateStatus(`${this.stats.activated} neu aktiviert! (${duration}s)`);
+      this.overlay.updateStatus(`✅ ${this.stats.activated} neu aktiviert! (${duration}s)`);
       this.overlay.updateProgress(100, 'success');
-      
-      setTimeout(() => {
-        const message = [
-          `${this.stats.activated} Coupons neu aktiviert!`,
-          `${this.stats.alreadyActive} waren bereits aktiv.`,
-          `${this.stats.unavailable} nicht verfügbar.`,
-          '',
-          'Seite neu laden?',
-        ].join('\n');
-        
-        if (confirm(message)) {
-          location.reload();
-        } else {
-          this.overlay.remove(2000);
-        }
-      }, 500);
     } else {
-      this.overlay.updateStatus('Keine neuen Coupons zum Aktivieren');
+      this.overlay.updateStatus('Alle Coupons waren bereits aktiv');
       this.overlay.updateProgress(100, 'normal');
-      this.overlay.remove(4000);
     }
+    
+    // Support-Bereich einblenden
+    setTimeout(() => {
+      this.overlay.showSupportSection();
+    }, 500);
+    
+    // Overlay nach 15 Sekunden automatisch entfernen
+    this.overlay.remove(15000);
   }
   
   /**

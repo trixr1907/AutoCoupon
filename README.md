@@ -1,15 +1,15 @@
 # 🎯 AutoCoupon
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Version](https://img.shields.io/badge/version-2.1.0-green.svg)
+![Version](https://img.shields.io/badge/version-2.2.0-green.svg)
 ![Type](https://img.shields.io/badge/type-Accessibility%20Tool-orange.svg)
 ![Unofficial](https://img.shields.io/badge/status-UNOFFICIAL-red.svg)
 
 > [!CAUTION]
 > **RECHTLICHER HINWEIS / HAFTUNGSAUSSCHLUSS**
-> 
+>
 > ⚠️ **Dieses Projekt ist ein rein privates Hobbyprojekt und steht in KEINER Verbindung zu Bonusprogramm-Anbietern oder deren Partnern.**
-> 
+>
 > Dieses Tool ist ein reines **Browser-Hilfsmittel (Accessibility Tool)** für Nutzer, die Schwierigkeiten haben, hunderte kleine Buttons manuell zu klicken (z.B. aufgrund motorischer Einschränkungen).
 >
 > - **Die Nutzung erfolgt ausdrücklich auf eigene Gefahr.**
@@ -22,6 +22,7 @@
 - **🚀 Bedienungshilfe:** Aktiviert Coupons nacheinander, um mühsames Klicken zu ersparen.
 - **🛡️ Menschliche Interaktion:** Simuliert natürliche Maus-Klicks mit zufälligen Verzögerungen.
 - **🎨 Modern UI:** Übersichtliches Overlay zur Statusanzeige.
+- **⚡ Turbo-Modus:** Optional schnellere Aktivierung (auf eigenes Risiko).
 - **🔒 Privacy First:** Läuft 100% lokal. Keine Daten verlassen deinen Browser.
 
 ---
@@ -85,6 +86,11 @@ npm install
 npm run generate-icons
 npm run build          # Für Chrome/Edge
 npm run build:firefox  # Für Firefox
+```
+
+**Wichtig:** Nach `npm run build` muss für Chrome noch folgendes ausgeführt werden:
+```bash
+npx esbuild src/entry/content.ts --bundle --outfile=dist/src/entry/content.js --format=iife --target=es2020 --minify
 ```
 
 ### Projektstruktur

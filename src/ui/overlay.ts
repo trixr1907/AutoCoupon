@@ -166,4 +166,14 @@ export class Overlay {
       };
     });
   }
+
+  /**
+   * Zeigt den Support-Bereich an
+   */
+  public showSupportSection(): void {
+    const supportSection = this.element.querySelector('#support-section');
+    if (supportSection) {
+      supportSection.classList.add('visible');
+    }
+  }
 }

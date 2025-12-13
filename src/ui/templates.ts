@@ -45,6 +45,20 @@ export function createWidgetHTML(): string {
           <div class="sota-stat-label">Nicht verfügbar</div>
         </div>
       </div>
+
+      <!-- Support-Bereich (wird nach Abschluss eingeblendet) -->
+      <div class="sota-support-section" id="support-section">
+        <div class="sota-support-title">🎉 Hat dir AutoCoupon geholfen?</div>
+        <div class="sota-support-text">Unterstütze die Entwicklung mit einem Kaffee!</div>
+        <div class="sota-support-buttons">
+          <a href="https://ko-fi.com/ivotech" target="_blank" class="sota-support-btn kofi">
+            ☕ Ko-fi
+          </a>
+          <a href="https://ivo-tech.com" target="_blank" class="sota-support-btn website">
+            🌐 Website
+          </a>
+        </div>
+      </div>
       
       <div class="sota-disclaimer">
         Privates Assistenz-Tool. Nutzung auf eigene Verantwortung.<br>

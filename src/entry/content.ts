@@ -4,8 +4,6 @@
  */
 
 import { CouponActivator } from '../core/activator';
-import { MessageAction, ExtensionMessage, ExtensionResponse } from '../types';
-import { logger } from '../utils/logger';
 
 // Flag um doppelte Ausführung zu verhindern
 let isRunning = false;
@@ -15,18 +13,18 @@ let isRunning = false;
  */
 async function startActivation(): Promise<void> {
   if (isRunning) {
-    logger.warn('Aktivierung läuft bereits.');
+    console.log('[AutoCoupon] Aktivierung läuft bereits.');
     return;
   }
   
   isRunning = true;
-  logger.info('🚀 AutoCoupon gestartet via Extension');
+  console.log('[AutoCoupon] 🚀 AutoCoupon gestartet');
   
   try {
     const activator = new CouponActivator();
     await activator.start();
   } catch (e) {
-    logger.error('Aktivierungsfehler:', e);
+    console.error('[AutoCoupon] Aktivierungsfehler:', e);
   } finally {
     isRunning = false;
   }
@@ -36,17 +34,13 @@ async function startActivation(): Promise<void> {
  * Message Listener für Extension-Kommunikation
  */
 chrome.runtime.onMessage.addListener(
-  (
-    request: ExtensionMessage,
-    _sender: chrome.runtime.MessageSender,
-    sendResponse: (response: ExtensionResponse) => void
-  ) => {
-    if (request.action === MessageAction.START_ACTIVATION) {
+  (request, _sender, sendResponse) => {
+    if (request.action === 'START_ACTIVATION') {
       startActivation();
       sendResponse({ status: 'started' });
     }
-    
-    // Return true um asynchrone Response zu ermöglichen
     return true;
   }
 );
+
+console.log('[AutoCoupon] Content Script geladen');

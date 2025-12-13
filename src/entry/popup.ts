@@ -3,8 +3,6 @@
  * Steuert das Extension-Popup und kommuniziert mit dem Content Script
  */
 
-import { MessageAction, ExtensionMessage } from '../types';
-
 /**
  * Elemente-Referenzen
  */
@@ -104,22 +102,39 @@ async function handleActivation(
       return;
     }
     
+    const tabId = tab.id;
+    
     // Status aktualisieren
-    updateStatus(statusText, statusDot, 'Starte Aktivierung...', 'loading');
+    updateStatus(statusText, statusDot, 'Starte...', 'loading');
     
-    // Nachricht an Content Script senden
-    const message: ExtensionMessage = { action: MessageAction.START_ACTIVATION };
-    await chrome.tabs.sendMessage(tab.id, message);
-    
-    // Erfolg
-    updateStatus(statusText, statusDot, 'Läuft! Schau auf die Seite.', 'ready');
-    
-    // Popup nach kurzem Delay schließen
-    setTimeout(() => window.close(), 800);
+    // Message senden - einfacher String statt Konstante
+    try {
+      await chrome.tabs.sendMessage(tabId, { action: 'START_ACTIVATION' });
+      
+      // Erfolg
+      updateStatus(statusText, statusDot, 'Läuft! Schau auf die Seite.', 'ready');
+      setTimeout(() => window.close(), 500);
+      
+    } catch {
+      // Content Script nicht geladen - Seite neu laden
+      updateStatus(statusText, statusDot, 'Lade Seite neu...', 'loading');
+      await chrome.tabs.reload(tabId);
+      
+      // Warte und versuche nochmal
+      await new Promise(resolve => setTimeout(resolve, 2500));
+      
+      try {
+        await chrome.tabs.sendMessage(tabId, { action: 'START_ACTIVATION' });
+        updateStatus(statusText, statusDot, 'Läuft!', 'ready');
+        setTimeout(() => window.close(), 500);
+      } catch {
+        updateStatus(statusText, statusDot, 'Bitte nochmal klicken', 'error');
+      }
+    }
     
   } catch (e) {
-    console.error('Connection error:', e);
-    updateStatus(statusText, statusDot, 'Fehler: Seite neu laden?', 'error');
+    console.error('Activation error:', e);
+    updateStatus(statusText, statusDot, 'Fehler', 'error');
   }
 }
 

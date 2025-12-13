@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AutoCoupon by Ivo",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "Browser-Assistenz für Coupon-Aktivierung",
   "permissions": [
     "activeTab",
