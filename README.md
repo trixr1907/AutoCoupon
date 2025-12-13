@@ -16,72 +16,21 @@
 
 ---
 
-## 🛠️ Installation & Setup (Für Entwickler)
+## ⚡ Schnellinstallation (Für Nutzer)
 
-Du möchtest das Projekt selbst bauen oder weiterentwickeln? Hier ist der "Zero to Hero" Guide.
-
-### Voraussetzungen
-
-- [Node.js](https://nodejs.org/) (Version 18+ empfohlen)
-- Git
-
-### 1. Repository klonen
-
-```bash
-git clone https://github.com/trixr1907/Payback-Coupon.git
-cd Payback-Coupon
-```
-
-### 2. Abhängigkeiten installieren
-
-```bash
-npm install
-```
-
-### 3. Icons generieren (Wichtig!)
-
-Das Projekt benötigt Icons, die aus dem `master-icon.png` generiert werden. Führe diesen Schritt **einmalig** aus:
-
-```bash
-npm run generate-icons
-```
-
-*Falls dieser Schritt fehlschlägt, stelle sicher, dass `master-icon.png` im Hauptverzeichnis liegt.*
-
-### 4. Build erstellen
-
-Erstelle die produktive Version der Extension:
-
-```bash
-npm run build
-```
-
-Dies erstellt einen Ordner **`dist/`** mit allen notwendigen Dateien.
-
----
-
-## 🌍 Installation im Browser
+**Kein Node.js, kein Git erforderlich!**
 
 ### Chrome / Edge / Brave
-
-1. Öffne `chrome://extensions`.
-2. Aktiviere den **Entwicklermodus** (Developer Mode) oben rechts.
-3. Klicke auf **"Entpackte Erweiterung laden"** (Load unpacked).
-4. Wähle den Ordner **`Payback-Coupon/dist`** aus (nicht den Hauptordner!).
+1. **[⬇️ Download Chrome Version](https://github.com/trixr1907/Payback-Coupon/releases/latest/download/Payback-Activator-Chrome.zip)**
+2. ZIP entpacken
+3. `chrome://extensions` öffnen → **Entwicklermodus** aktivieren
+4. **"Entpackte Erweiterung laden"** → Entpackten Ordner wählen
 
 ### Firefox
-
-**Wichtig:** Firefox benötigt einen separaten Build!
-
-1. Erstelle den Firefox-Build:
-
-   ```bash
-   npm run build:firefox
-   ```
-
-2. Öffne `about:debugging#/runtime/this-firefox` in Firefox.
-3. Klicke auf **"Temporäres Add-on laden..."**.
-4. Wähle die Datei **`dist-firefox/manifest.json`** aus (NICHT `dist/`!).
+1. **[⬇️ Download Firefox Version](https://github.com/trixr1907/Payback-Coupon/releases/latest/download/Payback-Activator-Firefox.zip)**
+2. ZIP entpacken
+3. `about:debugging#/runtime/this-firefox` öffnen
+4. **"Temporäres Add-on laden..."** → `manifest.json` im Ordner wählen
 
 ---
 
@@ -95,10 +44,42 @@ Dies erstellt einen Ordner **`dist/`** mit allen notwendigen Dateien.
 
 ---
 
+## 🛠️ Für Entwickler
+
+Du möchtest das Projekt selbst bauen oder weiterentwickeln?
+
+<details>
+<summary><strong>Entwickler-Setup anzeigen</strong></summary>
+
+### Voraussetzungen
+- [Node.js](https://nodejs.org/) (Version 18+)
+- Git
+
+### Setup
+```bash
+git clone https://github.com/trixr1907/Payback-Coupon.git
+cd Payback-Coupon
+npm install
+npm run generate-icons
+npm run build          # Für Chrome/Edge
+npm run build:firefox  # Für Firefox
+```
+
+### Projektstruktur
+```
+src/
+├── core/          # Aktivierungs-Logik
+├── entry/         # Extension Entry Points
+└── ui/            # Overlay & Styles
+```
+
+</details>
+
+---
+
 ## 🤝 Contributing
 
 Beiträge sind willkommen! Bitte erstelle ein Issue oder einen Pull Request.
-Schau dir auch [CONTRIBUTING.md](CONTRIBUTING.md) an.
 
 ## 📄 Lizenz
 
