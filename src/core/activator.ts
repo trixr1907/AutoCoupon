@@ -1,10 +1,8 @@
 import { Overlay } from '../ui/overlay';
-import { querySelectorAllDeep, isVisible, waitForElementDeep } from './dom-utils';
 
-// Debug mode - set to true for verbose console logging
+// Debug mode - disable in production
 const DEBUG = true;
-
-function log(...args: any[]) {
+function log(...args: unknown[]) {
   if (DEBUG) console.log('[Payback Activator]', ...args);
 }
 
@@ -15,35 +13,6 @@ export class CouponActivator {
   private totalCoupons: number = 0;
   private startTime: number = 0;
   
-  // Multiple possible selectors for different Payback page versions
-  private static CONTAINER_SELECTORS = [
-    'pb-coupon-center',
-    'pbc-coupon-center', 
-    '[class*="coupon-center"]',
-    '[class*="CouponCenter"]',
-    '.coupon-overview',
-    '#coupon-container'
-  ];
-  
-  private static COUPON_SELECTORS = [
-    'pbc-coupon',
-    'pb-coupon',
-    '[class*="coupon-card"]',
-    '[class*="CouponCard"]',
-    '.coupon-item',
-    '[data-coupon-id]'
-  ];
-  
-  private static BUTTON_SELECTORS = [
-    '.not-activated',
-    '.activate-button',
-    '.coupon-activate',
-    'button[class*="activate"]',
-    '[class*="ActivateButton"]',
-    'button:not(.activated):not(.disabled)',
-    '.cta-button:not(.activated)'
-  ];
-  
   constructor() {
     this.overlay = new Overlay();
     this.startTime = Date.now();
@@ -51,70 +20,37 @@ export class CouponActivator {
   
   public async start() {
     try {
-      log('Starting coupon activation...');
+      log('🚀 Starting coupon activation...');
       this.overlay.updateStatus('Initialisiere...');
       this.overlay.updateProgress(5);
       
-      // 1. Wait for Coupon Container
-      this.overlay.updateStatus('Suche Coupon-Bereich...');
+      // 1. Find pb-coupon-center
+      this.overlay.updateStatus('Suche Coupon-Center...');
+      const couponCenter = document.querySelector('pb-coupon-center');
       
-      let couponContainer: Element | null = null;
-      
-      // Try multiple selectors
-      for (const selector of CouponActivator.CONTAINER_SELECTORS) {
-        log('Trying container selector:', selector);
-        couponContainer = await waitForElementDeep(selector, 3000);
-        if (couponContainer) {
-          log('✓ Found container with:', selector);
-          break;
-        }
+      if (!couponCenter) {
+        throw new Error('Coupon-Center nicht gefunden. Bist du auf payback.de/coupons?');
       }
       
-      if (!couponContainer) {
-        // Fallback: Try to find coupons directly without container
-        log('No container found, trying direct coupon search...');
-        this.overlay.updateStatus('Suche Coupons direkt...');
+      log('✓ Found pb-coupon-center');
+      
+      // 2. Access Shadow DOM of coupon center
+      const centerShadow = couponCenter.shadowRoot;
+      if (!centerShadow) {
+        throw new Error('Shadow DOM nicht zugänglich.');
       }
       
+      log('✓ Accessed center shadow root');
       this.overlay.updateStatus('Scanne Coupons...');
       this.overlay.updateProgress(15);
       
-      // 2. Find all coupons
-      let coupons: Element[] = [];
+      // Wait a bit for dynamic content
+      await this.wait(500);
       
-      for (const selector of CouponActivator.COUPON_SELECTORS) {
-        log('Trying coupon selector:', selector);
-        const found = querySelectorAllDeep(selector);
-        if (found.length > 0) {
-          log(`✓ Found ${found.length} coupons with:`, selector);
-          coupons = found;
-          break;
-        }
-      }
-      
-      // If still no coupons, try looking for any clickable elements that look like activation buttons
-      if (coupons.length === 0) {
-        log('No coupons found with standard selectors, trying button-first approach...');
-        
-        for (const selector of CouponActivator.BUTTON_SELECTORS) {
-          const buttons = querySelectorAllDeep(selector);
-          if (buttons.length > 0) {
-            log(`✓ Found ${buttons.length} potential activation buttons with:`, selector);
-            // Click these buttons directly
-            this.overlay.updateStatus(`${buttons.length} Buttons gefunden`);
-            this.overlay.updateStats(0, 0);
-            this.totalCoupons = buttons.length;
-            
-            await this.processButtons(buttons);
-            this.finish();
-            return;
-          }
-        }
-      }
+      // 3. Find all pbc-coupon elements inside the shadow
+      const coupons = centerShadow.querySelectorAll('pbc-coupon');
       
       if (coupons.length === 0) {
-        log('❌ No coupons found with any selector');
-        log('Page HTML sample:', document.body.innerHTML.substring(0, 2000));
         this.overlay.updateStatus('Keine Coupons gefunden. Eingeloggt?');
         this.overlay.updateProgress(100, 'error');
         this.overlay.remove(5000);
@@ -122,45 +58,22 @@ export class CouponActivator {
       }
       
       this.totalCoupons = coupons.length;
+      log(`✓ Found ${this.totalCoupons} coupons`);
       this.overlay.updateStatus(`${this.totalCoupons} Coupons gefunden`);
       this.overlay.updateStats(0, 0);
       this.overlay.updateProgress(20);
       
-      await this.processCoupons(coupons);
+      // 4. Process each coupon
+      await this.processCoupons(Array.from(coupons));
       
       this.finish();
       
-    } catch (e: any) {
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : 'Unbekannter Fehler';
       console.error('Activator Error:', e);
-      this.overlay.updateStatus('Fehler: ' + (e.message || 'Unbekannt'));
+      this.overlay.updateStatus('Fehler: ' + message);
       this.overlay.updateProgress(100, 'error');
       this.overlay.remove(6000);
-    }
-  }
-  
-  private async processButtons(buttons: Element[]) {
-    for (let i = 0; i < buttons.length; i++) {
-      const btn = buttons[i];
-      const progress = 20 + ((i / buttons.length) * 80);
-      
-      this.overlay.updateProgress(progress);
-      this.overlay.updateStatus(`Aktiviere ${i + 1} von ${this.totalCoupons}...`);
-      
-      await this.wait(80);
-      
-      try {
-        if (isVisible(btn)) {
-          (btn as HTMLElement).click();
-          this.activatedCount++;
-          log(`✓ Clicked button ${i + 1}`);
-        } else {
-          this.skippedCount++;
-        }
-        this.overlay.updateStats(this.activatedCount, this.skippedCount);
-      } catch (e) {
-        log('Button click failed:', i, e);
-        this.skippedCount++;
-      }
     }
   }
   
@@ -170,71 +83,106 @@ export class CouponActivator {
       const progress = 20 + ((i / coupons.length) * 80);
       
       this.overlay.updateProgress(progress);
-      this.overlay.updateStatus(`Aktiviere ${i + 1} von ${this.totalCoupons}...`);
+      this.overlay.updateStatus(`Prüfe ${i + 1} von ${this.totalCoupons}...`);
       
-      await this.wait(60);
+      // Small delay to not overwhelm the page
+      await this.wait(30);
       
       try {
         const result = await this.activateSingleCoupon(coupon);
         if (result) {
           this.activatedCount++;
+          log(`✓ Activated coupon ${i + 1}`);
         } else {
           this.skippedCount++;
         }
         this.overlay.updateStats(this.activatedCount, this.skippedCount);
       } catch (e) {
-        log('Coupon failed:', i, e);
+        log(`✗ Failed coupon ${i + 1}:`, e);
         this.skippedCount++;
       }
     }
   }
   
   private async activateSingleCoupon(coupon: Element): Promise<boolean> {
-    // Try multiple button selectors inside the coupon
-    for (const selector of CouponActivator.BUTTON_SELECTORS) {
-      const buttons = querySelectorAllDeep(selector, coupon);
-      
-      for (const btn of buttons) {
-        if (isVisible(btn)) {
-          log('Clicking button with selector:', selector);
-          (btn as HTMLElement).click();
-          return true;
-        }
-      }
+    // Access the coupon's shadow root
+    const couponShadow = coupon.shadowRoot;
+    if (!couponShadow) {
+      log('No shadow root on coupon');
+      return false;
     }
     
-    // Fallback: Look for any button element
-    const anyButtons = querySelectorAllDeep('button', coupon);
-    for (const btn of anyButtons) {
-      const text = (btn as HTMLElement).innerText?.toLowerCase() || '';
-      if (text.includes('aktivier') || text.includes('einlösen') || text.includes('jetzt')) {
-        if (isVisible(btn)) {
-          log('Clicking button by text:', text);
-          (btn as HTMLElement).click();
-          return true;
-        }
-      }
+    // Find pbc-coupon-call-to-action
+    const cta = couponShadow.querySelector('pbc-coupon-call-to-action');
+    if (!cta) {
+      log('No CTA element found');
+      return false;
     }
     
-    return false;
+    // Access CTA's shadow root
+    const ctaShadow = cta.shadowRoot;
+    if (!ctaShadow) {
+      log('No shadow root on CTA');
+      return false;
+    }
+    
+    // Find the activate button
+    // Classes: coupon__activate-button, coupon-call-to-action__button
+    const activateBtn = ctaShadow.querySelector('button.coupon__activate-button') as HTMLButtonElement | null;
+    
+    if (!activateBtn) {
+      log('No activate button found');
+      return false;
+    }
+    
+    // Check button text to see if it's already activated or unavailable
+    const btnText = activateBtn.innerText?.toLowerCase() || '';
+    
+    // Skip if already activated or not available
+    if (btnText.includes('aktiviert') || 
+        btnText.includes('eingelöst') ||
+        btnText.includes('abgelaufen') ||
+        btnText.includes('in kürze')) {
+      log('Coupon not activatable:', btnText);
+      return false;
+    }
+    
+    // Check if button is visible and enabled
+    if (activateBtn.disabled || 
+        activateBtn.style.display === 'none' ||
+        !activateBtn.offsetParent) {
+      log('Button disabled or hidden');
+      return false;
+    }
+    
+    // Click the button!
+    log('Clicking activate button:', btnText);
+    activateBtn.click();
+    
+    // Small delay after click
+    await this.wait(50);
+    
+    return true;
   }
   
   private finish() {
     const duration = ((Date.now() - this.startTime) / 1000).toFixed(1);
-    this.overlay.updateStatus(`Fertig! ${duration}s`);
-    this.overlay.updateProgress(100, 'success');
     
     if (this.activatedCount > 0) {
+      this.overlay.updateStatus(`${this.activatedCount} aktiviert! (${duration}s)`);
+      this.overlay.updateProgress(100, 'success');
+      
       setTimeout(() => {
-        if (confirm(`${this.activatedCount} Coupons aktiviert!\nSeite neu laden?`)) {
+        if (confirm(`${this.activatedCount} Coupons aktiviert!\n\nSeite neu laden um Änderungen zu sehen?`)) {
           location.reload();
         } else {
           this.overlay.remove(2000);
         }
       }, 500);
     } else {
-      this.overlay.updateStatus('Keine neuen Coupons');
-      this.overlay.remove(3000);
+      this.overlay.updateStatus('Keine neuen Coupons zum Aktivieren');
+      this.overlay.updateProgress(100, 'normal');
+      this.overlay.remove(4000);
     }
   }
   
