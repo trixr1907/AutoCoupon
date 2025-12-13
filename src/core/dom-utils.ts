@@ -54,3 +54,34 @@ export function isVisible(elem: Element): boolean {
   if (!(elem instanceof HTMLElement)) return false;
   return !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length);
 }
+
+/**
+ * Waits for an element to appear in the DOM (searching deep in Shadow DOMs)
+ * @param selector The selector to search for
+ * @param timeoutMs Maximum time to wait in ms
+ * @param root The root element to start searching from
+ */
+export function waitForElementDeep(selector: string, timeoutMs: number = 5000, root: Element | Document = document): Promise<Element | null> {
+  return new Promise((resolve) => {
+    // 1. Try immediately
+    const initialFind = querySelectorAllDeep(selector, root);
+    if (initialFind.length > 0) {
+      return resolve(initialFind[0]);
+    }
+
+    // 2. Poll every 200ms
+    const intervalId = setInterval(() => {
+      const el = querySelectorAllDeep(selector, root);
+      if (el.length > 0) {
+        clearInterval(intervalId);
+        resolve(el[0]);
+      }
+    }, 200);
+
+    // 3. Timeout
+    setTimeout(() => {
+      clearInterval(intervalId);
+      resolve(null);
+    }, timeoutMs);
+  });
+}
