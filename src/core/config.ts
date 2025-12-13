@@ -78,9 +78,9 @@ export const STATUS_PATTERNS = {
  */
 export const UI = {
   /** Widget-ID für DOM */
-  WIDGET_ID: 'payback-sota-widget',
+  WIDGET_ID: 'autocoupon-widget',
   /** Styles-ID für DOM */
-  STYLES_ID: 'payback-sota-styles',
+  STYLES_ID: 'autocoupon-styles',
   /** Animation-Delay für Widget-Erscheinen */
   SHOW_DELAY_MS: 0,
   /** Delay beim Entfernen des Widgets */

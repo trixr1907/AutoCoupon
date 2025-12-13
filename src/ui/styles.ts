@@ -4,7 +4,7 @@
  */
 
 export const overlayStyles = `
-  #payback-sota-widget {
+  #autocoupon-widget {
     position: fixed;
     top: 100px;
     right: 20px;
@@ -18,7 +18,7 @@ export const overlayStyles = `
     transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  #payback-sota-widget.visible {
+  #autocoupon-widget.visible {
     opacity: 1;
     transform: translateY(0);
   }
