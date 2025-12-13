@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ivo Tech Activator Demo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bd00ff;
+            --bg-dark: #050510;
+            --glass: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            background-color: var(--bg-dark);
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+        }
+
+        /* Ambient Glow */
+        .ambient-glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(189, 0, 255, 0.15), transparent 70%);
+            z-index: 0;
+            animation: pulse-ambient 4s infinite ease-in-out;
+        }
+
+        /* Coupon Grid Background */
+        .grid-container {
+            position: absolute;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            width: 1200px;
+            opacity: 0.5;
+            transform: rotateX(20deg) scale(0.9);
+            z-index: 1;
+        }
+
+        .coupon-card {
+            background: var(--glass);
+            border: 1px solid var(--card-border);
+            height: 120px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .coupon-card::before {
+            content: '10x POINTS';
+            font-family: 'JetBrains Mono', monospace;
+            color: rgba(255,255,255,0.4);
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .activate-btn-fake {
+            margin-top: auto;
+            background: rgba(255,255,255,0.1);
+            height: 30px;
+            border-radius: 6px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.4);
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        /* The Hero Widget */
+        .hero-widget {
+            position: relative;
+            z-index: 10;
+            width: 380px;
+            background: rgba(10, 10, 20, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slide-in 1s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s;
+        }
+
+        .widget-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .logo-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #00f3ff 0%, #bd00ff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 243, 255, 0.4);
+        }
+
+        .logo-box svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+
+        .title-group h1 {
+            margin: 0;
+            font-size: 20px;
+            background: linear-gradient(90deg, #00f3ff, #bd00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .title-group p {
+            margin: 4px 0 0;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .main-btn {
+            width: 100%;
+            height: 56px;
+            background: linear-gradient(90deg, #00f3ff 0%, #bd00ff 100%);
+            border: none;
+            border-radius: 16px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 4px 20px rgba(0, 243, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: white;
+            opacity: 0;
+            transition: opacity 0.1s;
+        }
+
+        /* Fake Cursor */
+        .cursor {
+            position: fixed;
+            top: 110%; /* Start off screen */
+            left: 110%;
+            width: 24px;
+            height: 24px;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMyAzTDEwLjA3IDE5Ljk3TDEyLjU4IDEyLjU4TDE5Ljk3IDEwLjA3TDMgM1oiIGZpbGw9IndoaXRlIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==');
+            z-index: 100;
+            pointer-events: none;
+            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3));
+            animation: cursor-movement 5s forwards; /* Controls the entire sequence */
+        }
+
+        /* Animations */
+
+        /* 1. Widget Appearance */
+        @keyframes slide-in {
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* 2. Cursor Path */
+        @keyframes cursor-movement {
+            0% { top: 110%; left: 80%; }
+            20% { top: 60%; left: 50%; opacity: 1; } /* Enter screen */
+            40% { top: 52%; left: 50%; transform: translate(-50%, -50%) scale(1); } /* Hover button */
+            45% { transform: translate(-50%, -50%) scale(0.9); } /* Click press */
+            50% { transform: translate(-50%, -50%) scale(1); } /* Click release */
+            100% { top: 110%; left: 20%; opacity: 0; } /* Exit */
+        }
+
+        /* 3. Button Press Effect (Triggered by JS sync with cursor) */
+        .main-btn.pressed {
+            transform: scale(0.95);
+        }
+
+        /* 4. Shockwave & Activation */
+        @keyframes shockwave {
+            0% { box-shadow: 0 0 0 0 rgba(0, 243, 255, 0.8); }
+            100% { box-shadow: 0 0 0 1000px transparent; }
+        }
+
+        .shockwave-active {
+            animation: shockwave 1.5s ease-out;
+        }
+
+        /* Coupon Activation State */
+        .coupon-card.active {
+            border-color: var(--neon-cyan);
+            background: rgba(0, 243, 255, 0.05);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+        }
+
+        .coupon-card.active .activate-btn-fake {
+            background: var(--neon-cyan);
+            color: black;
+            font-weight: bold;
+            content: 'ACTIVATED';
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+        
+        /* Success Badge */
+        .success-badge {
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #10b981;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            opacity: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            transition: all 0.5s;
+        }
+        
+        .success-badge.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        .logo-text-footer {
+            margin-top: 20px;
+            font-family: 'JetBrains Mono';
+            font-size: 12px;
+            color: rgba(255,255,255,0.3);
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+
+    <!-- Background Grid of Coupons -->
+    <div class="grid-container" id="grid">
+        <!-- JS will populate this -->
+    </div>
+
+    <!-- The Main Extension Widget -->
+    <div class="hero-widget">
+        <div class="success-badge" id="successBadge">
+            <svg style="width:16px;height:16px" fill="none" class="w-4 h-4" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+            ALL COUPONS ACTIVATED
+        </div>
+
+        <div class="widget-header">
+            <div class="logo-box">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+            </div>
+            <div class="title-group">
+                <h1>Payback Activator</h1>
+                <p>by Ivo Tech</p>
+            </div>
+        </div>
+
+        <button class="main-btn" id="mainBtn">
+            <svg style="width:24px;height:24px" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            ACTIVATE COUPONS
+        </button>
+        
+        <div class="logo-text-footer">IVO TECH EDITION</div>
+    </div>
+
+    <!-- Fake Cursor Element -->
+    <div class="cursor"></div>
+
+    <script>
+        // Populate Grid
+        const grid = document.getElementById('grid');
+        for(let i=0; i<16; i++) {
+            const el = document.createElement('div');
+            el.className = 'coupon-card';
+            el.innerHTML = '<div class="activate-btn-fake">Activate</div>';
+            el.style.animationDelay = `${Math.random() * 0.5}s`;
+            grid.appendChild(el);
+        }
+
+        const btn = document.getElementById('mainBtn');
+        const badge = document.getElementById('successBadge');
+        const coupons = document.querySelectorAll('.coupon-card');
+
+        // Timing Sequence (synced with CSS cursor animation)
+        
+        // 1. Hover State (approx 2s in)
+        setTimeout(() => {
+            btn.style.transform = "translateY(-1px)";
+            btn.style.boxShadow = "0 6px 30px rgba(0, 243, 255, 0.6)";
+        }, 2000);
+
+        // 2. Click Down (approx 2.25s)
+        setTimeout(() => {
+            btn.style.transform = "scale(0.95)";
+        }, 2250);
+
+        // 3. Click Release & EXPLOSION (2.5s)
+        setTimeout(() => {
+            btn.style.transform = "scale(1)";
+            
+            // Trigger Shockwave
+            const shockwave = document.createElement('div');
+            shockwave.style.position = 'absolute';
+            shockwave.style.top = '50%';
+            shockwave.style.left = '50%';
+            shockwave.style.transform = 'translate(-50%, -50%)';
+            shockwave.style.width = '50px';
+            shockwave.style.height = '50px';
+            shockwave.style.borderRadius = '50%';
+            shockwave.style.boxShadow = '0 0 0 0 rgba(0, 243, 255, 0.8)';
+            shockwave.style.zIndex = '5';
+            shockwave.style.animation = 'shockwave 1s ease-out forwards';
+            document.body.appendChild(shockwave);
+
+            // Activate Badge
+            badge.classList.add('show');
+            btn.innerHTML = `<svg style="width:24px;height:24px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> DONE`;
+            btn.style.background = 'linear-gradient(90deg, #10b981, #34d399)';
+
+            // Cascade Activation of Cards
+            coupons.forEach((c, index) => {
+                setTimeout(() => {
+                    c.classList.add('active');
+                    c.querySelector('.activate-btn-fake').innerText = 'ACTIVATED';
+                    c.querySelector('.activate-btn-fake').style.color = 'black';
+                    c.querySelector('.activate-btn-fake').style.fontWeight = '800';
+                }, 100 + (index * 50)); // Staggered ripple effect
+            });
+
+        }, 2500);
+
+    </script>
+</body>
+</html>
