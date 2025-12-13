@@ -32,14 +32,14 @@
 
 ### Chrome / Edge / Brave
 
-1. **[⬇️ Download Chrome Version](https://github.com/trixr1907/Payback-Coupon/releases/latest/download/AutoCoupon-Chrome.zip)**
+1. **[⬇️ Download Chrome Version](https://github.com/trixr1907/AutoCoupon/releases/latest/download/AutoCoupon-Chrome.zip)**
 2. ZIP entpacken
 3. `chrome://extensions` öffnen → **Entwicklermodus** aktivieren
 4. **"Entpackte Erweiterung laden"** → Entpackten Ordner wählen
 
 ### Firefox
 
-1. **[⬇️ Download Firefox Version](https://github.com/trixr1907/Payback-Coupon/releases/latest/download/AutoCoupon-Firefox.zip)**
+1. **[⬇️ Download Firefox Version](https://github.com/trixr1907/AutoCoupon/releases/latest/download/AutoCoupon-Firefox.zip)**
 2. ZIP entpacken
 3. `about:debugging#/runtime/this-firefox` öffnen
 4. **"Temporäres Add-on laden..."** → `manifest.json` im Ordner wählen
@@ -79,8 +79,8 @@ Du möchtest den Code analysieren oder weiterentwickeln?
 ### Setup
 
 ```bash
-git clone https://github.com/trixr1907/Payback-Coupon.git
-cd Payback-Coupon
+git clone https://github.com/trixr1907/AutoCoupon.git
+cd AutoCoupon
 npm install
 npm run generate-icons
 npm run build          # Für Chrome/Edge
