@@ -1,7 +1,8 @@
 {
   "name": "payback-coupon-activator",
   "version": "2.0.0",
-  "description": "SOTA Payback Coupon Activator Bookmarklet",
+  "type": "module",
+  "description": "SOTA Payback Coupon Activator - Browser Extension",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
