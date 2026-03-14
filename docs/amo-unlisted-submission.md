@@ -6,11 +6,11 @@ Diese Datei bereitet den manuellen Upload fuer Mozilla `unlisted` vor.
 
 Erweiterungspaket:
 
-- `packages/firefox-selfhost/autocoupon-3.0.2.zip`
+- `packages/firefox-selfhost/autocoupon-<version>.zip`
 
 Source-Code-Paket:
 
-- `packages/firefox-source/autocoupon-firefox-source-3.0.2.zip`
+- `packages/firefox-source/autocoupon-firefox-source-<version>.zip`
 
 Hinweis:
 
