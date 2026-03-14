@@ -20,7 +20,7 @@ Die einfachste Nutzung erfolgt ueber die ZIP-Dateien im Release:
 
 Release-Seite:
 
-- https://github.com/trixr1907/AutoCoupon/releases/tag/v3.0.1
+- https://github.com/trixr1907/AutoCoupon/releases/tag/v3.0.2
 
 ### Chrome aus dem Release installieren
 

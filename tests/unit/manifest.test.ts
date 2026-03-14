@@ -45,7 +45,7 @@ describe('manifest generation', () => {
         "permissions": [
           "storage",
         ],
-        "version": "3.0.1",
+        "version": "3.0.2",
       }
     `);
   });
@@ -99,7 +99,7 @@ describe('manifest generation', () => {
         "permissions": [
           "storage",
         ],
-        "version": "3.0.1",
+        "version": "3.0.2",
       }
     `);
   });
