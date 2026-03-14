@@ -1,30 +1,91 @@
+import { readFileSync } from 'node:fs';
 import { defineConfig } from 'vite';
-import { resolve } from 'path';
+import webExtension from '@samrum/vite-plugin-web-extension';
+import { BRAND_NAME } from './src/shared/config/branding';
 
-// Separate Builds für jeden Entry damit kein Code-Splitting passiert
-const entries = {
-  content: resolve(__dirname, 'src/entry/content.ts'),
-  popup: resolve(__dirname, 'src/entry/popup.html'),
-  background: resolve(__dirname, 'src/entry/background.ts')
-};
+type TargetBrowser = 'chromium' | 'firefox';
+
+interface PackageMetadata {
+  description: string;
+  version: string;
+}
+
+const packageMetadata = JSON.parse(
+  readFileSync(new URL('./package.json', import.meta.url), 'utf8')
+) as PackageMetadata;
+
+const targetBrowser = (
+  process.env.TARGET_BROWSER === 'firefox' ? 'firefox' : 'chromium'
+) as TargetBrowser;
+
+const baseManifest = {
+  manifest_version: 3,
+  name: BRAND_NAME,
+  description: packageMetadata.description,
+  version: packageMetadata.version,
+  permissions: ['storage'],
+  host_permissions: [
+    'https://www.payback.de/*',
+    'https://*.payback.de/*',
+  ],
+  action: {
+    default_popup: 'src/pages/popup/index.html',
+    default_title: BRAND_NAME,
+  },
+  options_ui: {
+    page: 'src/pages/options/index.html',
+    open_in_tab: true,
+  },
+  content_scripts: [
+    {
+      matches: ['https://www.payback.de/*', 'https://*.payback.de/*'],
+      js: ['src/content/index.ts'],
+      run_at: 'document_idle',
+    },
+  ],
+  icons: {
+    16: 'icons/icon16.png',
+    48: 'icons/icon48.png',
+    128: 'icons/icon128.png',
+  },
+} as const;
+
+export function createManifest(target: TargetBrowser) {
+  if (target === 'firefox') {
+    return {
+      ...baseManifest,
+      background: {
+        scripts: ['src/background/index.ts'],
+      },
+      browser_specific_settings: {
+        gecko: {
+          id: 'autocoupon@ivo.dev',
+          strict_min_version: '121.0',
+        },
+      },
+    } as const;
+  }
+
+  return {
+    ...baseManifest,
+    background: {
+      service_worker: 'src/background/index.ts',
+      type: 'module',
+    },
+  } as const;
+}
 
 export default defineConfig({
   build: {
-    minify: 'terser',
-    cssCodeSplit: false,
-    target: 'es2020',
-    rollupOptions: {
-      input: entries,
-      output: {
-        entryFileNames: (chunkInfo) => {
-          return 'src/entry/[name].js';
-        },
-        // Keine separaten Chunks - alles inline in jeden Entry
-        manualChunks: {},
-        chunkFileNames: 'src/entry/shared.js',
-        assetFileNames: 'assets/[name].[ext]',
-        format: 'es'
-      }
-    }
-  }
+    emptyOutDir: true,
+    minify: 'esbuild',
+    outDir: targetBrowser === 'firefox' ? 'dist/firefox' : 'dist/chromium',
+    sourcemap: true,
+  },
+  plugins: [
+    webExtension({
+      manifest: createManifest(targetBrowser) as never,
+      useDynamicUrlWebAccessibleResources: false,
+    }),
+  ],
 });

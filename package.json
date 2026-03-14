@@ -1,26 +1,46 @@
 {
   "name": "autocoupon",
-  "version": "2.2.0",
+  "version": "3.0.0",
+  "private": true,
   "type": "module",
-  "description": "AutoCoupon - Browser Extension für Coupon-Aktivierung",
+  "description": "Local browser accessibility tool for sequential coupon activation on PAYBACK.",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "build:firefox": "node build-firefox.js",
-    "generate-icons": "node scripts/generate-icons.js",
-    "preview": "vite preview",
-    "lint": "eslint . --ext .ts",
-    "format": "prettier --write ."
+    "clean": "node ./scripts/clean.mjs",
+    "dev": "cross-env TARGET_BROWSER=chromium vite",
+    "dev:firefox": "cross-env TARGET_BROWSER=firefox vite",
+    "lint": "eslint src tests scripts eslint.config.mjs vite.config.ts vitest.config.ts env.d.ts --cache --cache-location .cache/eslint/",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "npm run lint && npm run typecheck && npm run test",
+    "build:chromium": "cross-env TARGET_BROWSER=chromium vite build",
+    "build:firefox": "cross-env TARGET_BROWSER=firefox vite build",
+    "build": "npm run clean && npm run build:chromium && npm run build:firefox",
+    "package": "npm run build && node ./scripts/package-build.mjs",
+    "generate-icons": "node ./scripts/generate-icons.js",
+    "preview": "vite preview"
   },
   "devDependencies": {
+    "@eslint/js": "^9.22.0",
+    "@samrum/vite-plugin-web-extension": "^5.1.1",
     "@types/chrome": "^0.1.32",
-    "@typescript-eslint/eslint-plugin": "^6.16.0",
-    "@typescript-eslint/parser": "^6.16.0",
-    "eslint": "^8.56.0",
-    "prettier": "^3.1.1",
+    "@types/node": "^22.13.14",
+    "cross-env": "^7.0.3",
+    "eslint": "^9.22.0",
+    "eslint-config-prettier": "^10.1.1",
+    "globals": "^16.0.0",
+    "jsdom": "^26.0.0",
+    "prettier": "^3.5.3",
+    "rimraf": "^6.0.1",
     "sharp": "^0.34.5",
-    "terser": "^5.26.0",
-    "typescript": "^5.3.3",
-    "vite": "^5.0.10"
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.26.1",
+    "vite": "^5.4.14",
+    "vitest": "^3.0.9",
+    "yazl": "^3.3.1"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.53.3",
+    "@rollup/rollup-win32-x64-msvc": "^4.53.3"
   }
 }

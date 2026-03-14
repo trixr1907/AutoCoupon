@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AutoCoupon</title>
+  </head>
+  <body>
+    <main class="layout">
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="brand-lockup">
+            <span class="brand-logo-shell">
+              <img class="brand-logo" id="brand-logo" alt="" />
+            </span>
+            <div>
+              <p class="eyebrow" id="brand-eyebrow"></p>
+              <h1 class="title" id="brand-title"></h1>
+            </div>
+          </div>
+          <p class="subtitle" id="brand-subtitle"></p>
+        </div>
+        <span class="badge" id="version-badge">v0.0.0</span>
+      </section>
+
+      <section class="card status-card">
+        <div class="section-head">
+          <h2>Seitenstatus</h2>
+          <button class="ghost-button" id="options-button" type="button">Optionen</button>
+        </div>
+        <div class="status-row">
+          <span class="state-dot" id="state-dot"></span>
+          <div>
+            <p class="state-headline" id="state-headline">Seite wird geprüft…</p>
+            <p class="state-copy" id="state-copy">
+              Öffne die PAYBACK-Coupon-Seite und logge dich ein.
+            </p>
+          </div>
+        </div>
+        <div class="notice" id="notification" hidden></div>
+      </section>
+
+      <section class="card">
+        <h2>Modus</h2>
+        <div class="mode-grid">
+          <label class="mode-card">
+            <input type="radio" name="mode" value="normal" checked />
+            <span>
+              <strong>Normal</strong>
+              <span>Konservativ und am robustesten.</span>
+            </span>
+          </label>
+          <label class="mode-card">
+            <input type="radio" name="mode" value="turbo" />
+            <span>
+              <strong>Turbo</strong>
+              <span>Schneller, aber weiterhin kandidatenspezifisch verifiziert.</span>
+            </span>
+          </label>
+          <label class="mode-card warning">
+            <input type="radio" name="mode" value="turbo-extreme" />
+            <span>
+              <strong>Turbo Extreme</strong>
+              <span>Experimenteller Burst-Modus für sichtbare Coupons.</span>
+            </span>
+          </label>
+        </div>
+      </section>
+
+      <section class="actions">
+        <button class="button primary" id="start-button" type="button">
+          Coupons aktivieren
+        </button>
+        <button class="button secondary" id="cancel-button" type="button" hidden>
+          Aktivierung abbrechen
+        </button>
+        <button class="button tertiary" id="open-button" type="button">
+          Coupon-Seite öffnen
+        </button>
+        <button class="button tertiary" id="reload-button" type="button">
+          Coupon-Seite neu laden
+        </button>
+      </section>
+
+      <section class="card">
+        <h2>Laufstatus</h2>
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-label">Bearbeitet</span>
+            <span class="stat-value" id="processed-value">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Aktiviert</span>
+            <span class="stat-value" id="activated-value">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Übersprungen</span>
+            <span class="stat-value" id="skipped-value">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Fehler</span>
+            <span class="stat-value" id="failed-value">0</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card slim">
+        <div id="branding-info"></div>
+      </section>
+
+      <footer class="footer">
+        <span>Keine Umgehung von Login, CAPTCHA oder Schutzmechanismen.</span>
+        <span id="version-text">v0.0.0</span>
+      </footer>
+    </main>
+
+    <script type="module" src="./index.ts"></script>
+  </body>
+</html>

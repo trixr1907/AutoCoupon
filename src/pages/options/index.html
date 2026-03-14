@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AutoCoupon Optionen</title>
+  </head>
+  <body>
+    <main class="layout">
+      <header class="hero">
+        <div class="hero-copy">
+          <div class="brand-lockup">
+            <span class="brand-logo-shell">
+              <img class="brand-logo" id="brand-logo" alt="" />
+            </span>
+            <div>
+              <p class="eyebrow" id="brand-eyebrow"></p>
+              <h1 id="brand-title"></h1>
+            </div>
+          </div>
+          <p id="brand-subtitle"></p>
+        </div>
+        <span class="badge" id="version-badge">v0.0.0</span>
+      </header>
+
+      <section class="card hint-card" id="first-run-card">
+        <h2>Erster Start</h2>
+        <p>
+          Logge dich auf `payback.de` manuell ein, öffne die Coupon-Seite und starte
+          die Aktivierung erst dann. Login-, CAPTCHA- und Schutzabfragen werden bewusst
+          nicht umgangen.
+        </p>
+        <div class="button-row">
+          <button class="button primary" id="dismiss-first-run" type="button">
+            Hinweis verstanden
+          </button>
+          <a class="button secondary" href="#tutorial">Zum Tutorial</a>
+        </div>
+      </section>
+
+      <section class="card" id="quickstart">
+        <h2>Schnellstart</h2>
+        <ol class="steps">
+          <li>Erweiterung im Browser laden und anpinnen.</li>
+          <li>PAYBACK oeffnen und dich normal einloggen.</li>
+          <li>Die Coupon-Seite oeffnen.</li>
+          <li>Das Popup der Erweiterung oeffnen.</li>
+          <li>Modus waehlen und die Aktivierung starten.</li>
+        </ol>
+        <p class="section-copy">
+          Das ausfuehrliche Tutorial mit allen Schritten findest du weiter unten auf
+          dieser Seite und im README des Projekts.
+        </p>
+        <a class="inline-link" href="#tutorial">Zum ausfuehrlichen Tutorial springen</a>
+      </section>
+
+      <section class="card">
+        <h2>Standardmodus</h2>
+        <div class="mode-grid">
+          <label class="mode-card">
+            <input type="radio" name="preferred-mode" value="normal" />
+            <span>
+              <strong>Normal</strong>
+              <span>Schonend, stabil und mit klarer Verifikation nach jedem Klick.</span>
+            </span>
+          </label>
+          <label class="mode-card">
+            <input type="radio" name="preferred-mode" value="turbo" />
+            <span>
+              <strong>Turbo</strong>
+              <span>Schneller Ablauf mit kurzen Prüfintervallen.</span>
+            </span>
+          </label>
+          <label class="mode-card warning">
+            <input type="radio" name="preferred-mode" value="turbo-extreme" />
+            <span>
+              <strong>Turbo Extreme</strong>
+              <span>Experimenteller Burst-Modus für sichtbare Coupons.</span>
+            </span>
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Darstellung & Diagnose</h2>
+        <label class="toggle">
+          <input type="checkbox" id="overlay-enabled" />
+          <span>
+            <strong>In-Page-Overlay aktivieren</strong>
+            <span>Status, Progress und Cancel direkt auf der PAYBACK-Seite anzeigen.</span>
+          </span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="debug-logging-enabled" />
+          <span>
+            <strong>Debug-Logging aktivieren</strong>
+            <span>Nur lokale Konsolenlogs für Diagnosezwecke, keine Telemetrie.</span>
+          </span>
+        </label>
+      </section>
+
+      <section class="card">
+        <h2>Grenzen und Datenschutz</h2>
+        <ul class="rules">
+          <li>Keine Cookie-, Token- oder Session-Extraktion.</li>
+          <li>Keine Umgehung von Login, CAPTCHA, Rate-Limits oder Schutzmechanismen.</li>
+          <li>Keine Telemetrie und kein externes Backend.</li>
+          <li>Host-Permissions sind auf PAYBACK beschränkt.</li>
+        </ul>
+      </section>
+
+      <section class="card tutorial-card" id="tutorial">
+        <h2>Tutorial</h2>
+        <ol class="steps">
+          <li>Erweiterung installieren oder temporär laden.</li>
+          <li>PAYBACK im Browser öffnen und manuell einloggen.</li>
+          <li>Die Coupon-Seite öffnen und kurz warten, bis sie vollständig sichtbar ist.</li>
+          <li>Das Popup öffnen und den Seitenstatus lesen.</li>
+          <li>`Normal`, `Turbo` oder `Turbo Extreme` passend auswählen.</li>
+          <li>Mit `Coupons aktivieren` den Lauf starten.</li>
+          <li>Im Popup oder Overlay Status, Fortschritt und Statistik verfolgen.</li>
+          <li>Bei Bedarf mit `Aktivierung abbrechen` sauber stoppen.</li>
+          <li>Über diese Options Page Standardmodus und Anzeige anpassen.</li>
+        </ol>
+      </section>
+
+      <section class="card about-card">
+        <h2>Über & Support</h2>
+        <div id="branding-info"></div>
+      </section>
+    </main>
+
+    <script type="module" src="./index.ts"></script>
+  </body>
+</html>
