@@ -1,120 +1,201 @@
-# 🎯 AutoCoupon
+# AutoCoupon
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Version](https://img.shields.io/badge/version-2.2.0-green.svg)
-![Type](https://img.shields.io/badge/type-Accessibility%20Tool-orange.svg)
-![Unofficial](https://img.shields.io/badge/status-UNOFFICIAL-red.svg)
+AutoCoupon ist eine lokale Browser-Erweiterung fuer Chrome und Firefox, die sichtbare Coupons auf `payback.de` sequenziell aktiviert. Die Erweiterung arbeitet direkt im Browser-Kontext, nutzt kein externes Backend und umgeht weder Login noch CAPTCHA noch andere Schutzmechanismen.
 
-> [!CAUTION]
-> **RECHTLICHER HINWEIS / HAFTUNGSAUSSCHLUSS**
->
-> ⚠️ **Dieses Projekt ist ein rein privates Hobbyprojekt und steht in KEINER Verbindung zu Bonusprogramm-Anbietern oder deren Partnern.**
->
-> Dieses Tool ist ein reines **Browser-Hilfsmittel (Accessibility Tool)** für Nutzer, die Schwierigkeiten haben, hunderte kleine Buttons manuell zu klicken (z.B. aufgrund motorischer Einschränkungen).
->
-> - **Die Nutzung erfolgt ausdrücklich auf eigene Gefahr.**
-> - Es werden keine Sicherheitsmechanismen umgangen. Das Tool klickt lediglich Buttons im sichtbaren Browser-Fenster, so wie es ein Mensch tun würde.
-> - **Durch die Nutzung dieses Tools verstoßen Sie möglicherweise gegen die AGB des jeweiligen Anbieters.**
-> - Der Entwickler übernimmt **keine Haftung** für gesperrte Accounts, verlorene Punkte oder sonstige Schäden.
+## Projektbeschreibung
 
-## ✨ Features
+- basiert fachlich auf `AutoCoupon-Android`
+- arbeitet lokal auf der sichtbaren PAYBACK-Seite
+- keine Telemetrie, keine Cookie- oder Token-Extraktion
+- Popup fuer Start, Stop, Status und Statistik
+- Options Page fuer Einstellungen, Schnellstart und Tutorial
+- optionales In-Page-Overlay fuer Laufstatus und Stop-Funktion
 
-- **🚀 Bedienungshilfe:** Aktiviert Coupons nacheinander, um mühsames Klicken zu ersparen.
-- **🛡️ Menschliche Interaktion:** Simuliert natürliche Maus-Klicks mit zufälligen Verzögerungen.
-- **🎨 Modern UI:** Übersichtliches Overlay zur Statusanzeige.
-- **⚡ Turbo-Modus:** Optional schnellere Aktivierung (auf eigenes Risiko).
-- **🔒 Privacy First:** Läuft 100% lokal. Keine Daten verlassen deinen Browser.
+## Installation
 
----
+### Chrome
 
-## ⚡ Schnellinstallation (Für Nutzer)
-
-**Kein Node.js, kein Git erforderlich!**
-
-### Chrome / Edge / Brave
-
-1. **[⬇️ Download Chrome Version](https://github.com/trixr1907/AutoCoupon/releases/latest/download/AutoCoupon-Chrome.zip)**
-2. ZIP entpacken
-3. `chrome://extensions` öffnen → **Entwicklermodus** aktivieren
-4. **"Entpackte Erweiterung laden"** → Entpackten Ordner wählen
+1. `npm install`
+2. `npm run build`
+3. `chrome://extensions` oeffnen
+4. Entwicklermodus aktivieren
+5. `Entpackte Erweiterung laden` waehlen
+6. `dist/chromium` auswaehlen
 
 ### Firefox
 
-1. **[⬇️ Download Firefox Version](https://github.com/trixr1907/AutoCoupon/releases/latest/download/AutoCoupon-Firefox.zip)**
-2. ZIP entpacken
-3. `about:debugging#/runtime/this-firefox` öffnen
-4. **"Temporäres Add-on laden..."** → `manifest.json` im Ordner wählen
+1. `npm install`
+2. `npm run build`
+3. `about:debugging#/runtime/this-firefox` oeffnen
+4. `Temporäres Add-on laden...` waehlen
+5. `dist/firefox/manifest.json` auswaehlen
 
----
+## Kurzanleitung
 
-## 📖 Nutzung
+1. Erweiterung im Browser laden und anpinnen.
+2. `https://www.payback.de/coupons` oeffnen.
+3. Dich normal bei PAYBACK einloggen.
+4. Das AutoCoupon-Popup oeffnen.
+5. Einen Modus waehlen.
+6. `Coupons aktivieren` starten.
+7. Statistik im Popup oder Overlay beobachten.
+8. Bei Bedarf `Aktivierung abbrechen`.
+9. Einstellungen ueber die Options Page anpassen.
 
-1. Gehe auf die Coupon-Seite deines Bonusprogramms (z.B. payback.de/coupons).
-2. Logge dich ein.
-3. Klicke auf das **AutoCoupon Icon** in deiner Toolbar.
-4. Das Tool beginnt, die Coupons in menschlicher Geschwindigkeit zu aktivieren.
-5. Lehne dich zurück! ☕
+## Schritt-fuer-Schritt-Tutorial
 
----
+### 1. Erweiterung installieren
 
-## ☕ Unterstützen
+Die Erweiterung wird lokal geladen und danach am besten direkt an die Browser-Leiste angepinnt.
 
-Gefällt dir das Projekt? Dann unterstütze mich gerne!
+![Browser mit installierter Erweiterung](docs/images/install-extension.png)
 
-[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20me-ff5e5b?logo=ko-fi&logoColor=white)](https://ko-fi.com/ivotech)
+### 2. PAYBACK oeffnen und einloggen
 
----
+Oeffne PAYBACK ganz normal im Browser und melde dich selbst an. AutoCoupon uebernimmt den Login nicht und greift nicht in Schutzabfragen ein.
 
-## 🛠️ Für Entwickler / Forschung
+### 3. Coupon-Seite oeffnen
 
-Du möchtest den Code analysieren oder weiterentwickeln?
+Wechsle auf `https://www.payback.de/coupons` und warte kurz, bis die Seite sichtbar geladen ist.
 
-<details>
-<summary><strong>Entwickler-Setup anzeigen</strong></summary>
+### 4. Erweiterung oeffnen
 
-### Voraussetzungen
+Oeffne das Popup der Erweiterung. Dort siehst du sofort, ob die aktuelle Seite erkannt wurde und ob ein Start moeglich ist.
 
-- [Node.js](https://nodejs.org/) (Version 18+)
-- Git
+![Geoeffnetes Popup](docs/images/open-popup.png)
 
-### Setup
+### 5. Aktivierungsmodus auswaehlen
+
+Waehle den Modus, der am besten zu deiner Situation passt. Fuer die meisten Nutzer ist `Normal` die beste Wahl.
+
+![Modusauswahl im Popup](docs/images/mode-selection.png)
+
+### 6. Coupons automatisch aktivieren
+
+Mit `Coupons aktivieren` startet der Lauf. AutoCoupon verarbeitet nur sichtbare Coupons lokal im Browser und prueft jeden Schritt nach.
+
+![Laufende Aktivierung](docs/images/activation-running.png)
+
+### 7. Ergebnis und Statistik verstehen
+
+Nach dem Lauf siehst du, wie viele Coupons verarbeitet, aktiviert, uebersprungen oder nicht verfuegbar waren.
+
+![Ergebnis und Statistik](docs/images/activation-result.png)
+
+### 8. Aktivierung stoppen
+
+Waehle `Aktivierung abbrechen`, wenn du den laufenden Durchgang sauber stoppen moechtest. Der Lauf endet dann kontrolliert als Abbruch und nicht als harter Fehler.
+
+### 9. Einstellungen aendern
+
+In der Options Page stellst du Standardmodus, Overlay und Debug-Logging ein. Dort findest du auch Schnellstart, Tutorial und Support-Links.
+
+![Options Page mit Schnellstart und Tutorial](docs/images/options-page.png)
+
+## Modi
+
+### `normal`
+
+- konservativ und am robustesten
+- mit Klick-Verzoegerung und laengerer Verifikation
+- beste Standardwahl
+
+### `turbo`
+
+- schneller als `normal`
+- weiterhin mit kandidatenspezifischer Verifikation
+- sinnvoll, wenn die Coupon-Seite stabil reagiert
+
+### `turbo-extreme`
+
+- schnellster Modus
+- verarbeitet sichtbare Coupons in kleinen Bursts
+- experimenteller als die anderen Modi
+
+## Troubleshooting
+
+### Popup zeigt `Login erforderlich`
+
+- PAYBACK ist noch nicht eingeloggt
+- oder eine Schutz-/Captcha-Seite ist aktiv
+- Login bitte normal selbst abschliessen
+
+### Popup zeigt `Nicht auf Coupon-Seite`
+
+- oeffne `https://www.payback.de/coupons`
+- warte kurz, bis die Seite vollstaendig sichtbar ist
+
+### Popup zeigt `Layout derzeit nicht sicher lesbar`
+
+- PAYBACK hat das Layout veraendert
+- Seite neu laden und erneut pruefen
+- wenn das Problem bleibt, Support kontaktieren
+
+### Aktivierung laeuft nicht an
+
+- pruefe, ob die Seite als `ready` erkannt wird
+- pruefe, ob du dich bereits auf der Coupon-Seite befindest
+- pruefe, ob ein anderer Lauf noch aktiv ist
+
+### Overlay ist nicht sichtbar
+
+- oeffne die Options Page
+- aktiviere `In-Page-Overlay`
+- lade die Coupon-Seite neu
+
+## Branding, Support und Kontakt
+
+- Entwickelt von Ivo
+- Homepage: https://ivo-tech.com
+- Support: https://ivo-tech.com/#contact
+- Buy me a coffee: https://ko-fi.com/ivotech
+
+Das Branding bleibt bewusst zurueckhaltend. Funktion, Statusanzeige und Bedienung haben immer Vorrang.
+
+## Entwicklung und Checks
 
 ```bash
-git clone https://github.com/trixr1907/AutoCoupon.git
-cd AutoCoupon
 npm install
-npm run generate-icons
-npm run build          # Für Chrome/Edge
-npm run build:firefox  # Für Firefox
+npm run lint
+npm run typecheck
+npm run test
+npm run build
+npm run check
 ```
 
-**Wichtig:** Nach `npm run build` muss für Chrome noch folgendes ausgeführt werden:
-```bash
-npx esbuild src/entry/content.ts --bundle --outfile=dist/src/entry/content.js --format=iife --target=es2020 --minify
-```
+Build-Ausgaben:
 
-### Projektstruktur
+- `dist/chromium`
+- `dist/firefox`
 
-```
+## Architektur in Kurzform
+
+```text
 src/
-├── types/         # TypeScript Typdefinitionen
-├── core/          # Aktivierungs-Logik (Simulierte Interaktion)
-├── entry/         # Extension Entry Points
-├── ui/            # Overlay & Styles
-└── utils/         # Hilfsfunktionen (Logger)
+  background/         Broker zwischen Popup und Content
+  content/            PAYBACK-DOM-Logik, Runner, Session, Overlay
+  pages/              Popup, Options und gemeinsame UI-Teile
+  platform/           Browser-, Messaging- und Storage-Adapter
+  shared/             Contracts, Konfiguration und Logging
+tests/
+  unit/
+  integration/
+  fixtures/payback/
 ```
 
-</details>
+Wichtige Regeln:
 
----
+- Popup spricht nie direkt mit dem Content Script
+- PAYBACK-Selektoren und Pattern leben nur unter `src/content/sites/payback`
+- Browser-Unterschiede leben nur unter `src/platform/browser`
+- Persistenz erfolgt nur ueber `storage.local`
 
-## 🤝 Contributing
+## Referenzen
 
-Beiträge zur Verbesserung der Sicherheit und Accessibility sind willkommen.
+- Android-Fachreferenz: [MainActivity.kt](/home/ivo/projects/AutoCoupon-Android/app/src/main/java/com/ivotech/autocoupon/MainActivity.kt)
+- Android-Fachreferenz: [injector.js](/home/ivo/projects/AutoCoupon-Android/app/src/main/assets/injector.js)
+- Root-Cause-Analyse: [docs/root-cause-analysis.md](docs/root-cause-analysis.md)
 
-## 📄 Lizenz
+## Lizenz
 
-MIT License - siehe [LICENSE](LICENSE) Datei.
-
----
-*Made with ❤️ by [Ivo Tech](https://ivo-tech.com) for Accessibility*
+MIT

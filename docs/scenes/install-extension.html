@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AutoCoupon Tutorial Szene</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(14, 165, 233, 0.18), transparent 28%),
+          linear-gradient(180deg, #071120 0%, #0a1627 100%);
+        color: #eef5fb;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 32px;
+      }
+
+      .scene {
+        width: 1280px;
+        border-radius: 28px;
+        border: 1px solid rgba(148, 163, 184, 0.16);
+        background: rgba(7, 13, 24, 0.92);
+        box-shadow: 0 36px 80px rgba(2, 8, 23, 0.38);
+        overflow: hidden;
+      }
+
+      .scene-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 28px 32px 20px;
+      }
+
+      .scene-header h1 {
+        margin: 0 0 10px;
+        font-size: 34px;
+      }
+
+      .scene-header p {
+        margin: 0;
+        max-width: 620px;
+        color: #a9becf;
+        line-height: 1.6;
+      }
+
+      .tag {
+        align-self: start;
+        border-radius: 999px;
+        padding: 10px 14px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #dceaff;
+        background: rgba(59, 130, 246, 0.16);
+        border: 1px solid rgba(96, 165, 250, 0.24);
+      }
+
+      .browser {
+        margin: 0 32px 32px;
+        border-radius: 24px;
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        overflow: hidden;
+        background: #0b1424;
+      }
+
+      .toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 14px 18px;
+        background: rgba(12, 20, 35, 0.96);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+      }
+
+      .toolbar-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .dots {
+        display: flex;
+        gap: 8px;
+      }
+
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 999px;
+        background: rgba(148, 163, 184, 0.28);
+      }
+
+      .address {
+        min-width: 420px;
+        border-radius: 999px;
+        padding: 10px 16px;
+        background: rgba(15, 23, 42, 0.68);
+        color: #d8e8fb;
+        border: 1px solid rgba(148, 163, 184, 0.16);
+        font-size: 14px;
+      }
+
+      .extension-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border-radius: 999px;
+        padding: 9px 14px;
+        background: rgba(15, 23, 42, 0.68);
+        border: 1px solid rgba(148, 163, 184, 0.16);
+        color: #eef5fb;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .extension-chip img {
+        width: 24px;
+        height: 24px;
+      }
+
+      .browser-content {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 24px;
+        padding: 28px;
+      }
+
+      .payback-panel,
+      .note-panel {
+        border-radius: 20px;
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        background: rgba(15, 23, 42, 0.5);
+        padding: 24px;
+      }
+
+      .payback-panel h2,
+      .note-panel h2 {
+        margin: 0 0 12px;
+        font-size: 22px;
+      }
+
+      .payback-panel p,
+      .note-panel p,
+      .note-panel li {
+        margin: 0;
+        color: #abc0d2;
+        line-height: 1.6;
+      }
+
+      .coupon-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .coupon {
+        border-radius: 16px;
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        padding: 16px;
+        background: rgba(7, 13, 24, 0.58);
+      }
+
+      .coupon strong {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .coupon span {
+        display: inline-flex;
+        margin-top: 10px;
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 12px;
+        font-weight: 700;
+        background: rgba(34, 197, 94, 0.16);
+        color: #d9fbe6;
+      }
+
+      .note-panel ul {
+        margin: 16px 0 0;
+        padding-left: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="scene">
+      <section class="scene-header">
+        <div>
+          <h1>1. Erweiterung installieren</h1>
+          <p>
+            Lade die Erweiterung in Chrome oder Firefox und pinne sie an die
+            Symbolleiste. Danach ist das AutoCoupon-Icon immer direkt erreichbar.
+          </p>
+        </div>
+        <span class="tag">Tutorial Schritt 1</span>
+      </section>
+
+      <section class="browser">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <div class="dots">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+            <div class="address">https://www.payback.de/coupons</div>
+          </div>
+          <div class="extension-chip">
+            <img src="../../public/icons/icon48.png" alt="AutoCoupon Logo" />
+            <span>AutoCoupon angepinnt</span>
+          </div>
+        </div>
+
+        <div class="browser-content">
+          <article class="payback-panel">
+            <h2>PAYBACK im Browser</h2>
+            <p>
+              Nach dem Laden der Erweiterung oeffnest du PAYBACK wie gewohnt im
+              Browser und meldest dich normal an.
+            </p>
+
+            <div class="coupon-grid">
+              <div class="coupon">
+                <strong>Coupon-Bereich</strong>
+                <p>Die Erweiterung arbeitet nur lokal auf der sichtbaren Seite.</p>
+                <span>Browser-Kontext</span>
+              </div>
+              <div class="coupon">
+                <strong>Kein Extra-Login</strong>
+                <p>Login und Schutzabfragen bleiben komplett in deiner Hand.</p>
+                <span>Keine Umgehung</span>
+              </div>
+            </div>
+          </article>
+
+          <aside class="note-panel">
+            <h2>Wichtig</h2>
+            <p>
+              AutoCoupon fuegt sich dezent ein. Das Branding bleibt klein, damit die
+              eigentliche Coupon-Aktivierung immer im Vordergrund steht.
+            </p>
+            <ul>
+              <li>Erweiterung laden</li>
+              <li>Icon anpinnen</li>
+              <li>PAYBACK normal nutzen</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
