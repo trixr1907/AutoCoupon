@@ -11,7 +11,40 @@ AutoCoupon ist eine lokale Browser-Erweiterung fuer Chrome und Firefox, die sich
 - Options Page fuer Einstellungen, Schnellstart und Tutorial
 - optionales In-Page-Overlay fuer Laufstatus und Stop-Funktion
 
-## Installation
+## Installation aus dem GitHub-Release
+
+Die einfachste Nutzung erfolgt ueber die ZIP-Dateien im Release:
+
+- Chromium: `AutoCoupon-Chromium.zip`
+- Firefox: `AutoCoupon-Firefox.zip`
+
+Release-Seite:
+
+- https://github.com/trixr1907/AutoCoupon/releases/tag/v3.0.1
+
+### Chrome aus dem Release installieren
+
+1. Auf der Release-Seite `AutoCoupon-Chromium.zip` herunterladen.
+2. Die ZIP-Datei in einen normalen Ordner entpacken.
+3. `chrome://extensions` oeffnen.
+4. Den Entwicklermodus aktivieren.
+5. `Entpackte Erweiterung laden` waehlen.
+6. Den entpackten Chromium-Ordner auswaehlen.
+7. Die Erweiterung optional an die Browser-Leiste anpinnen.
+
+### Firefox aus dem Release installieren
+
+1. Auf der Release-Seite `AutoCoupon-Firefox.zip` herunterladen.
+2. Die ZIP-Datei in einen normalen Ordner entpacken.
+3. `about:debugging#/runtime/this-firefox` oeffnen.
+4. `Temporäres Add-on laden...` waehlen.
+5. Im entpackten Firefox-Ordner die Datei `manifest.json` auswaehlen.
+
+Hinweis:
+
+- Die Firefox-Installation auf diesem Weg ist in der Regel temporaer und muss nach einem Browser-Neustart erneut geladen werden.
+
+## Installation aus dem Quellcode
 
 ### Chrome
 
