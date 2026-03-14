@@ -3,7 +3,16 @@ import { CONTENT_COMMAND_TYPE } from '../../src/shared/contracts/messages';
 import { getChromeMockControls, loadFixture } from '../test-utils';
 
 describe('ContentSession', () => {
-  it('emits readiness and status updates while processing coupons', async () => {
+  it('does not mount the overlay while idle after initialization', async () => {
+    document.body.innerHTML = loadFixture('payback/react-coupons.html');
+
+    const session = new ContentSession();
+    await session.init();
+
+    expect(document.getElementById('autocoupon-overlay-root')).toBeNull();
+  });
+
+  it('emits status updates while processing coupons', async () => {
     document.body.innerHTML = loadFixture('payback/react-coupons.html');
     const card = document.querySelector<HTMLElement>('[data-testid="coupon-card"]');
     const button = card?.querySelector<HTMLButtonElement>('button');

@@ -57,6 +57,15 @@ export const UNAVAILABLE_PATTERNS = [
   /\bvorbei\b/i,
 ] as const;
 
+export const NON_COUPON_ACTION_PATTERNS = [
+  /^\W*$/i,
+  /^\bi\b$/i,
+  /\binfo\b/i,
+  /\bdetails?\b/i,
+  /\bmehr erfahren\b/i,
+  /\bzum coupon\b/i,
+] as const;
+
 export const LOGIN_PATTERNS = [
   /\beinloggen\b/i,
   /\blogin\b/i,

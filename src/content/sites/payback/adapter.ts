@@ -21,6 +21,7 @@ import {
   COUPON_HINT_PATTERNS,
   COUPON_SURFACE_PATTERNS,
   LOGIN_PATTERNS,
+  NON_COUPON_ACTION_PATTERNS,
   REDEEM_PATTERNS,
   SEMANTIC_CONTAINER_SELECTOR,
   PREFERRED_CONTAINER_SELECTOR,
@@ -33,6 +34,12 @@ type SearchRoot = Document | ShadowRoot | Element;
 interface PaybackAdapterOptions {
   pageUrl?: URL | string | (() => URL | string);
   root?: SearchRoot;
+}
+
+interface DisplayedCouponTotals {
+  total: number | null;
+  active: number | null;
+  inactive: number | null;
 }
 
 const logger = createLogger('payback-adapter');
@@ -266,6 +273,7 @@ export class PaybackAdapter {
 
     const url = this.getPageUrl();
     const surfaceText = this.getSurfaceText();
+    const displayedTotals = this.extractDisplayedCouponTotals();
 
     if (!this.isPaybackUrl(url)) {
       return this.buildPageState({
@@ -297,7 +305,7 @@ export class PaybackAdapter {
           activatableCount > 0
             ? `${activatableCount} aktivierbare Coupons erkannt.`
             : 'Coupon-Seite erkannt. Keine aktivierbaren Coupons sichtbar.',
-        candidateCount: candidates.length,
+        candidateCount: displayedTotals.total ?? candidates.length,
         activatableCount,
       });
     }
@@ -333,6 +341,10 @@ export class PaybackAdapter {
 
     const sortedCandidates = Array.from(merged.values())
       .sort((left, right) => {
+        if (Boolean(left.actionElement) !== Boolean(right.actionElement)) {
+          return left.actionElement ? -1 : 1;
+        }
+
         const leftPriority = this.statusPriority(left.status);
         const rightPriority = this.statusPriority(right.status);
 
@@ -343,14 +355,21 @@ export class PaybackAdapter {
         return right.confidence - left.confidence;
       });
 
-    if (sortedCandidates.length > RUN_LIMITS.maxCandidatesPerScan) {
+    const displayedTotals = this.extractDisplayedCouponTotals();
+    const candidateCap = Math.min(
+      RUN_LIMITS.maxCandidatesPerScan,
+      displayedTotals.total ?? RUN_LIMITS.maxCandidatesPerScan
+    );
+
+    if (sortedCandidates.length > candidateCap) {
       logger.warn('Candidate scan hit safety cap', {
         collected: sortedCandidates.length,
-        cappedAt: RUN_LIMITS.maxCandidatesPerScan,
+        cappedAt: candidateCap,
+        pageTotal: displayedTotals.total,
       });
     }
 
-    const resolved = sortedCandidates.slice(0, RUN_LIMITS.maxCandidatesPerScan);
+    const resolved = sortedCandidates.slice(0, candidateCap);
 
     logger.debug('Collected candidates', {
       total: resolved.length,
@@ -575,7 +594,7 @@ export class PaybackAdapter {
     const actionLabel = getElementLabel(actionElement);
     const containerText = getTextContent(container);
 
-    if (!this.isRelevantAction(actionElement, actionLabel, containerText)) {
+    if (!this.isRelevantAction(actionLabel, containerText)) {
       return null;
     }
 
@@ -658,10 +677,13 @@ export class PaybackAdapter {
   }
 
   private isRelevantAction(
-    actionElement: HTMLElement,
     actionLabel: string,
     containerText: string
   ): boolean {
+    if (matchesAny(actionLabel, NON_COUPON_ACTION_PATTERNS)) {
+      return false;
+    }
+
     if (
       matchesAny(
         actionLabel,
@@ -674,7 +696,8 @@ export class PaybackAdapter {
     }
 
     return (
-      this.isCouponLikeContainer(actionElement) || this.isCouponText(containerText)
+      this.isCouponText(containerText) &&
+      actionLabel.length >= 3
     );
   }
 
@@ -920,6 +943,41 @@ export class PaybackAdapter {
     }
 
     return normalizeText(root.textContent);
+  }
+
+  private extractDisplayedCouponTotals(): DisplayedCouponTotals {
+    const labels = queryAllDeep<HTMLElement>(
+      'option, h1, h2, h3, h4, strong, legend, label, p, span, div',
+      this.getSearchRoot()
+    )
+      .map((element) => getTextContent(element))
+      .filter((text) => text.length > 0 && text.length <= 120);
+
+    let total: number | null = null;
+    let active: number | null = null;
+    let inactive: number | null = null;
+
+    for (const label of labels) {
+      total ??= this.extractCount(label, /\balle\s+e?coupons?\s*\((\d+)\)/i);
+      inactive ??= this.extractCount(label, /^\bnicht\s+aktiviert\s*\((\d+)\)$/i);
+      active ??= this.extractCount(label, /^\baktiviert\s*\((\d+)\)$/i);
+    }
+
+    if (total === null && active !== null && inactive !== null) {
+      total = active + inactive;
+    }
+
+    return { total, active, inactive };
+  }
+
+  private extractCount(text: string, pattern: RegExp): number | null {
+    const match = text.match(pattern);
+    if (!match) {
+      return null;
+    }
+
+    const parsed = Number.parseInt(match[1] ?? '', 10);
+    return Number.isFinite(parsed) ? parsed : null;
   }
 
   private detectLoginBlockers(url: URL, text: string): PageBlocker[] {

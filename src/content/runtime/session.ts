@@ -30,8 +30,6 @@ export class ContentSession {
 
   async init(): Promise<void> {
     await this.applySettings(await getSettings());
-    const page = await this.detectPageState();
-    await this.emitEvent(CONTENT_EVENT_TYPE.ready, { page });
   }
 
   async handleCommand(
@@ -110,12 +108,17 @@ export class ContentSession {
   private async applySettings(settings: Settings): Promise<void> {
     this.settings = settings;
     setLoggerDebugEnabled(settings.debugLoggingEnabled);
-    this.overlay.setEnabled(settings.overlayEnabled, () => {
-      this.runner.cancel();
-    });
+    this.overlay.setEnabled(
+      settings.overlayEnabled && this.lastStatus !== null,
+      () => {
+        this.runner.cancel();
+      }
+    );
 
     if (this.lastStatus && settings.overlayEnabled) {
       this.overlay.render(this.lastStatus);
+    } else {
+      this.overlay.destroy();
     }
   }
 
