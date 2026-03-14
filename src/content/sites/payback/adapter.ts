@@ -324,7 +324,7 @@ export class PaybackAdapter {
       }
     }
 
-    const resolved = Array.from(merged.values())
+    const sortedCandidates = Array.from(merged.values())
       .sort((left, right) => {
         const leftPriority = this.statusPriority(left.status);
         const rightPriority = this.statusPriority(right.status);
@@ -334,8 +334,16 @@ export class PaybackAdapter {
         }
 
         return right.confidence - left.confidence;
-      })
-      .slice(0, RUN_LIMITS.maxCandidatesPerScan);
+      });
+
+    if (sortedCandidates.length > RUN_LIMITS.maxCandidatesPerScan) {
+      logger.warn('Candidate scan hit safety cap', {
+        collected: sortedCandidates.length,
+        cappedAt: RUN_LIMITS.maxCandidatesPerScan,
+      });
+    }
+
+    const resolved = sortedCandidates.slice(0, RUN_LIMITS.maxCandidatesPerScan);
 
     logger.debug('Collected candidates', {
       total: resolved.length,

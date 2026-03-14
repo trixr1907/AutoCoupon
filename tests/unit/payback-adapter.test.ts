@@ -53,6 +53,27 @@ describe('PaybackAdapter', () => {
     expect(candidates[0]?.id).toMatch(/^coupon-/);
   });
 
+  it('does not stop counting at the old 250 candidate cap on larger coupon pages', async () => {
+    const cards = Array.from({ length: 362 }, (_, index) => {
+      const label = `Coupon ${index + 1}`;
+      return `
+        <article data-testid="coupon-${index + 1}">
+          <h2>${label}</h2>
+          <button>${index < 2 ? 'Aktivieren' : 'Bereits aktiviert'}</button>
+        </article>
+      `;
+    }).join('');
+
+    document.body.innerHTML = `<main>${cards}</main>`;
+
+    const adapter = new PaybackAdapter();
+    const candidates = await adapter.collectCandidates();
+
+    expect(candidates).toHaveLength(362);
+    expect(candidates.filter((candidate) => candidate.status === 'activatable')).toHaveLength(2);
+    expect(candidates.filter((candidate) => candidate.status === 'already-active')).toHaveLength(360);
+  });
+
   it('falls back to the legacy shadow-dom structure when present', async () => {
     const couponCenter = document.createElement('pb-coupon-center');
     const couponCenterShadow = couponCenter.attachShadow({ mode: 'open' });

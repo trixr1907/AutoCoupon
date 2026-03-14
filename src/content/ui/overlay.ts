@@ -198,7 +198,7 @@ export class Overlay {
     this.setText(
       'meta',
       status.summary.totalSeen > 0
-        ? `${status.summary.processed}/${status.summary.totalSeen} bekannte Coupons`
+        ? `${status.summary.processed}/${status.summary.totalSeen} gescannte Coupons`
         : 'Scanne Coupon-Seite…'
     );
 

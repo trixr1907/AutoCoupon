@@ -6,7 +6,9 @@ export const DOM_STABILITY = {
 } as const;
 
 export const RUN_LIMITS = {
-  maxCandidatesPerScan: 250,
+  // Browser pages commonly expose well above the Android-era 250 coupon cap.
+  // Keep a generous safety limit so normal PAYBACK pages are counted fully.
+  maxCandidatesPerScan: 1000,
   maxScrollPasses: 5,
   maxExtremeBurstSize: 4,
 } as const;
