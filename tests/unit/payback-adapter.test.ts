@@ -74,6 +74,38 @@ describe('PaybackAdapter', () => {
     expect(candidates.filter((candidate) => candidate.status === 'already-active')).toHaveLength(360);
   });
 
+  it('prefers individual coupon cards over broad parent sections', async () => {
+    document.body.innerHTML = `
+      <section>
+        <h2>Aktiviert (2)</h2>
+        <article>
+          <div>
+            <strong>500 Extra °P</strong>
+            <p>Gueltig bis 29.03.2026</p>
+            <button>Vor Ort einlösen</button>
+            <button aria-label="Info">i</button>
+          </div>
+        </article>
+        <article>
+          <div>
+            <strong>40fach °P</strong>
+            <p>Gueltig bis 31.03.2026</p>
+            <button>Online einlösen</button>
+            <button aria-label="Info">i</button>
+          </div>
+        </article>
+      </section>
+    `;
+
+    const adapter = new PaybackAdapter();
+    const candidates = await adapter.collectCandidates();
+
+    expect(candidates).toHaveLength(2);
+    expect(candidates.every((candidate) => candidate.status === 'already-active')).toBe(
+      true
+    );
+  });
+
   it('falls back to the legacy shadow-dom structure when present', async () => {
     const couponCenter = document.createElement('pb-coupon-center');
     const couponCenterShadow = couponCenter.attachShadow({ mode: 'open' });

@@ -22,6 +22,7 @@ import {
   COUPON_SURFACE_PATTERNS,
   LOGIN_PATTERNS,
   REDEEM_PATTERNS,
+  SEMANTIC_CONTAINER_SELECTOR,
   UNAVAILABLE_PATTERNS,
   matchesAny,
 } from './patterns';
@@ -34,6 +35,10 @@ interface PaybackAdapterOptions {
 }
 
 const logger = createLogger('payback-adapter');
+const MAX_COUPON_CONTAINER_TEXT_LENGTH = 900;
+const MAX_RELEVANT_ACTIONS_PER_CONTAINER = 3;
+const DATE_PATTERN = /\b\d{1,2}\.\d{1,2}\.\d{2,4}\b/g;
+const POINTS_PATTERN = /\b\d+\s*(?:fach|xfach|°p|punkte?)\b/gi;
 
 function normalizeText(value: string | null | undefined): string {
   return (value ?? '').replace(/\s+/g, ' ').trim().toLowerCase();
@@ -665,6 +670,23 @@ export class PaybackAdapter {
   }
 
   private isCouponLikeContainer(element: HTMLElement): boolean {
+    if (!isVisible(element)) {
+      return false;
+    }
+
+    const text = getTextContent(element);
+    if (text.length < 20 || text.length > MAX_COUPON_CONTAINER_TEXT_LENGTH) {
+      return false;
+    }
+
+    if (this.countRelevantDescendantActions(element) > MAX_RELEVANT_ACTIONS_PER_CONTAINER) {
+      return false;
+    }
+
+    if (!this.hasCouponMetadata(element, text)) {
+      return false;
+    }
+
     return this.getContainerScore(element) >= 3;
   }
 
@@ -717,29 +739,49 @@ export class PaybackAdapter {
     let fallback: HTMLElement | null = null;
 
     while (current && current !== document.body) {
-      if (
-        current.matches(
-          '[data-testid*="coupon" i], [data-qa*="coupon" i], [class*="coupon" i], [id*="coupon" i]'
-        )
-      ) {
+      if (this.isContainerCandidateElement(current) && this.isCouponLikeContainer(current)) {
         return current;
       }
 
-      if (
-        !fallback &&
-        current.matches('article, [role="article"], [role="listitem"], li, section')
-      ) {
+      if (!fallback && current.matches(SEMANTIC_CONTAINER_SELECTOR)) {
         fallback = current;
-      }
-
-      if (this.getContainerScore(current) >= 4) {
-        return current;
       }
 
       current = current.parentElement;
     }
 
     return fallback;
+  }
+
+  private isContainerCandidateElement(element: HTMLElement): boolean {
+    return element.matches(CONTAINER_SELECTOR);
+  }
+
+  private hasCouponMetadata(element: HTMLElement, text: string): boolean {
+    const heading = this.getCandidateLabel(element);
+    const hasDate = DATE_PATTERN.test(text);
+    DATE_PATTERN.lastIndex = 0;
+    const hasPoints = POINTS_PATTERN.test(text);
+    POINTS_PATTERN.lastIndex = 0;
+    const hasMedia =
+      element.querySelector('img, picture, [role="img"], svg') !== null;
+
+    return Boolean(heading) || hasDate || hasPoints || hasMedia;
+  }
+
+  private countRelevantDescendantActions(container: HTMLElement): number {
+    return Array.from(container.querySelectorAll<HTMLElement>(ACTION_SELECTOR)).filter(
+      (actionElement) => {
+        const label = getElementLabel(actionElement);
+        return Boolean(label) &&
+          matchesAny(
+            label,
+            ACTIVATE_PATTERNS.concat(ALREADY_ACTIVE_PATTERNS)
+              .concat(REDEEM_PATTERNS)
+              .concat(UNAVAILABLE_PATTERNS)
+          );
+      }
+    ).length;
   }
 
   private getCandidateId(

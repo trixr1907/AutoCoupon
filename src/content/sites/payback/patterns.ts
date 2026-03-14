@@ -1,16 +1,20 @@
 export const ACTION_SELECTOR =
   'button, [role="button"], a[href], input[type="button"], input[type="submit"]';
 
-export const CONTAINER_SELECTOR = [
-  '[data-testid*="coupon" i]',
-  '[data-qa*="coupon" i]',
-  '[class*="coupon" i]',
-  '[id*="coupon" i]',
+export const SEMANTIC_CONTAINER_SELECTOR = [
   'article',
   '[role="article"]',
   '[role="listitem"]',
   'li',
   'section',
+].join(', ');
+
+export const CONTAINER_SELECTOR = [
+  '[data-testid*="coupon" i]',
+  '[data-qa*="coupon" i]',
+  '[class*="coupon" i]',
+  '[id*="coupon" i]',
+  SEMANTIC_CONTAINER_SELECTOR,
 ].join(', ');
 
 export const ACTIVATE_PATTERNS = [
