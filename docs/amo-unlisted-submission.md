@@ -17,10 +17,79 @@ Hinweis:
 - Auf der Upload-Seite waehlst du zuerst das Erweiterungspaket aus.
 - Falls Mozilla im weiteren Verlauf das Source-Paket anfordert, nutze das vorbereitete Source-Archiv.
 - Das signierte Endergebnis von Mozilla wird spaeter ein `.xpi`.
+- Fuer die Endnutzer-Verteilung wird dieses signierte `.xpi` bevorzugt, nicht das Upload-ZIP.
 
 ## Kurzbeschreibung
 
 AutoCoupon is a local Firefox extension for PAYBACK coupon pages. It helps the user activate visible coupons directly in the browser after a normal manual login. The extension has no backend, no telemetry, and does not extract cookies or tokens.
+
+## Produktseite fuellen
+
+Fuer die Produktseite auf AMO kannst du diese Werte verwenden.
+
+Sprache:
+
+- `Deutsch` als Standard-Sprache fuer die Produktseite
+- Reviewer Notes trotzdem auf `Englisch`
+
+Name:
+
+```text
+AutoCoupon
+```
+
+Zusammenfassung:
+
+```text
+Lokale PAYBACK-Hilfe zur sequenziellen Coupon-Aktivierung direkt im Firefox-Browser.
+```
+
+Beschreibung:
+
+```text
+AutoCoupon ist eine lokale Firefox-Erweiterung fuer PAYBACK-Coupon-Seiten.
+
+Die Erweiterung hilft dabei, sichtbare Coupons direkt im Browser nacheinander zu aktivieren, nachdem der Nutzer sich ganz normal selbst bei PAYBACK eingeloggt hat.
+
+Wichtige Eigenschaften:
+- lokale DOM-Automatisierung im Browser
+- kein Backend
+- keine Telemetrie
+- keine Cookie- oder Token-Extraktion
+- keine Umgehung von Login, CAPTCHA oder Schutzmechanismen
+
+Funktionsumfang:
+- Erkennung der PAYBACK-Coupon-Seite
+- Modusauswahl: Normal, Turbo, Turbo Extreme
+- sequentielle Aktivierung sichtbarer Coupons
+- Status, Fortschritt und Statistik
+- Stop-Funktion
+- Options Page fuer Einstellungen und Schnellstart
+
+AutoCoupon arbeitet ausschliesslich auf den freigegebenen PAYBACK-Hosts und speichert nur lokale Erweiterungs-Einstellungen.
+```
+
+Homepage:
+
+```text
+https://ivo-tech.com
+```
+
+Spenden-URL:
+
+```text
+https://ko-fi.com/ivotech
+```
+
+Tags:
+
+- bei `unlisted` optional
+- wenn du sie setzen willst, dann sparsam und neutral
+- Empfehlung: leer lassen
+
+Lizenz:
+
+- `MIT`
 
 ## Notes for Mozilla Reviewers
 

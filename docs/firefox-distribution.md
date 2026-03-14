@@ -107,6 +107,18 @@ Praktisch wichtig:
 - saubere Dateiendung `.xpi`
 - fuer Endnutzer klar kennzeichnen, dass es das signierte Firefox-Paket ist
 
+Empfohlene Benennung fuer Releases:
+
+- `AutoCoupon-Firefox-<version>-signed.xpi`
+
+Empfohlene Installationsanweisung fuer Nutzer:
+
+1. `about:addons` in Firefox oeffnen
+2. Zahnrad-Menue im Erweiterungsbereich oeffnen
+3. `Add-on aus Datei installieren...` waehlen
+4. das signierte `.xpi` auswaehlen
+5. Installation bestaetigen
+
 ## Oeffentliche AMO-Listung
 
 Wenn du die Erweiterung spaeter direkt im offiziellen Firefox Add-ons Store anbieten willst, ist der naechste Schritt eine `listed`-Einreichung ueber AMO statt reiner Self-Distribution.

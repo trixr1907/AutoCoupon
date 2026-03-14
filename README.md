@@ -16,7 +16,8 @@ AutoCoupon ist eine lokale Browser-Erweiterung fuer Chrome und Firefox, die sich
 Die einfachste Nutzung erfolgt ueber die ZIP-Dateien im Release:
 
 - Chromium: `AutoCoupon-Chromium.zip`
-- Firefox: `AutoCoupon-Firefox.zip`
+- Firefox dauerhaft: `AutoCoupon-Firefox-3.0.2-signed.xpi`
+- Firefox temporär/Test: `AutoCoupon-Firefox.zip`
 
 Release-Seite:
 
@@ -32,7 +33,21 @@ Release-Seite:
 6. Den entpackten Chromium-Ordner auswaehlen.
 7. Die Erweiterung optional an die Browser-Leiste anpinnen.
 
-### Firefox aus dem Release installieren
+### Firefox dauerhaft aus dem Release installieren
+
+1. Auf der Release-Seite `AutoCoupon-Firefox-3.0.2-signed.xpi` herunterladen.
+2. In Firefox `about:addons` oeffnen.
+3. Im Erweiterungsbereich das Zahnrad-Menue oeffnen.
+4. `Add-on aus Datei installieren...` waehlen.
+5. Die heruntergeladene `.xpi`-Datei auswaehlen.
+6. Die Installation bestaetigen.
+
+Hinweis:
+
+- Das ist die empfohlene Firefox-Variante fuer die normale Nutzung.
+- Dafuer wird das von Mozilla signierte XPI verwendet.
+
+### Firefox temporaer aus dem Release installieren
 
 1. Auf der Release-Seite `AutoCoupon-Firefox.zip` herunterladen.
 2. Die ZIP-Datei in einen normalen Ordner entpacken.
