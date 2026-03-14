@@ -15,8 +15,11 @@
     "check": "npm run lint && npm run typecheck && npm run test",
     "build:chromium": "cross-env TARGET_BROWSER=chromium vite build",
     "build:firefox": "cross-env TARGET_BROWSER=firefox vite build",
+    "build:firefox:selfhost": "npm run build:firefox && web-ext build --source-dir dist/firefox --artifacts-dir packages/firefox-selfhost --overwrite-dest",
     "build": "npm run clean && npm run build:chromium && npm run build:firefox",
+    "lint:firefox": "npm run build:firefox && web-ext lint --source-dir dist/firefox --boring",
     "package": "npm run build && node ./scripts/package-build.mjs",
+    "sign:firefox:unlisted": "npm run build:firefox && web-ext sign --channel=unlisted --source-dir dist/firefox --artifacts-dir packages/firefox-signed",
     "generate-icons": "node ./scripts/generate-icons.js",
     "preview": "vite preview"
   },
@@ -37,6 +40,7 @@
     "typescript-eslint": "^8.26.1",
     "vite": "^5.4.14",
     "vitest": "^3.0.9",
+    "web-ext": "^10.0.0",
     "yazl": "^3.3.1"
   },
   "optionalDependencies": {

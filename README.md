@@ -43,6 +43,9 @@ Release-Seite:
 Hinweis:
 
 - Die Firefox-Installation auf diesem Weg ist in der Regel temporaer und muss nach einem Browser-Neustart erneut geladen werden.
+- Fuer eine dauerhafte Firefox-Installation brauchst du ein von Mozilla signiertes XPI.
+- Der signing-vorbereitete Workflow im Repository ist auf aktuelle Firefox-Versionen ausgelegt: Desktop ab 140+, Android ab 142+.
+- Der vorbereitete Repo-Workflow dafuer steht in [docs/firefox-distribution.md](docs/firefox-distribution.md).
 
 ## Installation aus dem Quellcode
 
@@ -194,6 +197,14 @@ npm run typecheck
 npm run test
 npm run build
 npm run check
+```
+
+Firefox-spezifische Distributions-Skripte:
+
+```bash
+npm run build:firefox:selfhost
+npm run lint:firefox
+npm run sign:firefox:unlisted
 ```
 
 Build-Ausgaben:

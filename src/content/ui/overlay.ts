@@ -241,55 +241,113 @@ export class Overlay {
     this.host = document.createElement('div');
     this.host.id = OVERLAY_ROOT_ID;
     this.shadowRoot = this.host.attachShadow({ mode: 'open' });
-    this.shadowRoot.innerHTML = `
-      <style>${styles}</style>
-      <div class="panel">
-        <div class="card">
-          <div class="content">
-            <div class="header">
-              <div>
-                <h2 class="title">AutoCoupon</h2>
-                <p class="subtitle">Lokale PAYBACK-Hilfe im Browser-Kontext.</p>
-              </div>
-              <span class="badge" id="mode-badge">Bereit</span>
-            </div>
-            <div class="status" id="status-text">Initialisiere…</div>
-            <div class="track">
-              <div class="bar" id="progress-bar"></div>
-            </div>
-            <div class="stats">
-              <div class="stat">
-                <span class="label">Bearbeitet</span>
-                <span class="value" id="processed">0</span>
-              </div>
-              <div class="stat">
-                <span class="label">Aktiviert</span>
-                <span class="value" id="activated">0</span>
-              </div>
-              <div class="stat">
-                <span class="label">Übersprungen</span>
-                <span class="value" id="skipped">0</span>
-              </div>
-              <div class="stat">
-                <span class="label">Fehler</span>
-                <span class="value" id="failed">0</span>
-              </div>
-            </div>
-            <div class="footer">
-              <span class="meta" id="meta">Warte auf Status…</span>
-              <button class="cancel" id="cancel-button" hidden>Abbrechen</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
+    const style = document.createElement('style');
+    style.textContent = styles;
+    this.shadowRoot.appendChild(style);
+
+    const panel = this.createElement('div', { className: 'panel' });
+    const card = this.createElement('div', { className: 'card' });
+    const content = this.createElement('div', { className: 'content' });
+    const header = this.createElement('div', { className: 'header' });
+    const heading = this.createElement('div');
+    const title = this.createElement('h2', {
+      className: 'title',
+      textContent: 'AutoCoupon',
+    });
+    const subtitle = this.createElement('p', {
+      className: 'subtitle',
+      textContent: 'Lokale PAYBACK-Hilfe im Browser-Kontext.',
+    });
+    const badge = this.createElement('span', {
+      className: 'badge',
+      id: 'mode-badge',
+      textContent: 'Bereit',
+    });
+    const status = this.createElement('div', {
+      className: 'status',
+      id: 'status-text',
+      textContent: 'Initialisiere…',
+    });
+    const track = this.createElement('div', { className: 'track' });
+    const progressBar = this.createElement('div', {
+      className: 'bar',
+      id: 'progress-bar',
+    });
+    const stats = this.createElement('div', { className: 'stats' });
+    const footer = this.createElement('div', { className: 'footer' });
+    const meta = this.createElement('span', {
+      className: 'meta',
+      id: 'meta',
+      textContent: 'Warte auf Status…',
+    });
+    const cancelButton = this.createElement('button', {
+      className: 'cancel',
+      id: 'cancel-button',
+      textContent: 'Abbrechen',
+    }) as HTMLButtonElement;
+    cancelButton.hidden = true;
+
+    heading.append(title, subtitle);
+    header.append(heading, badge);
+    track.appendChild(progressBar);
+    stats.append(
+      this.createStat('Bearbeitet', 'processed'),
+      this.createStat('Aktiviert', 'activated'),
+      this.createStat('Übersprungen', 'skipped'),
+      this.createStat('Fehler', 'failed')
+    );
+    footer.append(meta, cancelButton);
+    content.append(header, status, track, stats, footer);
+    card.appendChild(content);
+    panel.appendChild(card);
+    this.shadowRoot.appendChild(panel);
 
     document.documentElement.appendChild(this.host);
 
-    const cancelButton = this.getElement('cancel-button') as HTMLButtonElement;
     cancelButton.onclick = () => {
       this.onCancel?.();
     };
+  }
+
+  private createStat(label: string, valueId: string): HTMLDivElement {
+    const stat = this.createElement('div', { className: 'stat' });
+    const statLabel = this.createElement('span', {
+      className: 'label',
+      textContent: label,
+    });
+    const value = this.createElement('span', {
+      className: 'value',
+      id: valueId,
+      textContent: '0',
+    });
+
+    stat.append(statLabel, value);
+    return stat;
+  }
+
+  private createElement<K extends keyof HTMLElementTagNameMap>(
+    tagName: K,
+    options: {
+      className?: string;
+      id?: string;
+      textContent?: string;
+    } = {}
+  ): HTMLElementTagNameMap[K] {
+    const element = document.createElement(tagName);
+
+    if (options.className) {
+      element.className = options.className;
+    }
+
+    if (options.id) {
+      element.id = options.id;
+    }
+
+    if (options.textContent !== undefined) {
+      element.textContent = options.textContent;
+    }
+
+    return element;
   }
 
   private removeDuplicateHosts(): void {

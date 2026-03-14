@@ -59,8 +59,14 @@ export function createManifest(target: TargetBrowser) {
       },
       browser_specific_settings: {
         gecko: {
+          data_collection_permissions: {
+            required: ['none'],
+          },
           id: 'autocoupon@ivo.dev',
-          strict_min_version: '121.0',
+          strict_min_version: '140.0',
+        },
+        gecko_android: {
+          strict_min_version: '142.0',
         },
       },
     } as const;
