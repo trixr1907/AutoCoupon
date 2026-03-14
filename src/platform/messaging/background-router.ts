@@ -206,31 +206,67 @@ export class BackgroundRouter {
       case POPUP_MESSAGE_TYPE.pageOpenCoupons: {
         const activeTab = await queryActiveTab();
         const tabId = extractTabId(activeTab);
+        let targetTab: chrome.tabs.Tab;
 
         if (tabId) {
-          await updateTab(tabId, { url: PAYBACK_COUPONS_URL });
+          targetTab = await updateTab(tabId, { url: PAYBACK_COUPONS_URL });
         } else {
-          await createTab({ url: PAYBACK_COUPONS_URL });
+          targetTab = await createTab({ url: PAYBACK_COUPONS_URL });
+        }
+
+        const targetTabId = extractTabId(targetTab);
+        if (targetTabId) {
+          this.dependencies.registry.markNavigating(targetTabId, {
+            windowId: extractWindowId(targetTab),
+            isPaybackHost: true,
+          });
         }
 
         return createUiResponse({
           ok: true,
-          context: await this.resolveActiveContext({ forceRefresh: false }),
+          context:
+            targetTabId
+              ? buildTabContext({
+                  ...(this.dependencies.registry.get(targetTabId) ?? createEmptyContext()),
+                  tabId: targetTabId,
+                  windowId: extractWindowId(targetTab),
+                  isPaybackHost: true,
+                  contentReady: false,
+                })
+              : await this.resolveActiveContext({ forceRefresh: false }),
         });
       }
 
       case POPUP_MESSAGE_TYPE.pageReloadCoupons: {
         const activeTab = await queryActiveTab();
         const tabId = extractTabId(activeTab);
+        let targetTab: chrome.tabs.Tab;
         if (tabId) {
-          await updateTab(tabId, { url: PAYBACK_COUPONS_URL });
+          targetTab = await updateTab(tabId, { url: PAYBACK_COUPONS_URL });
         } else {
-          await createTab({ url: PAYBACK_COUPONS_URL });
+          targetTab = await createTab({ url: PAYBACK_COUPONS_URL });
+        }
+
+        const targetTabId = extractTabId(targetTab);
+        if (targetTabId) {
+          this.dependencies.registry.markNavigating(targetTabId, {
+            windowId: extractWindowId(targetTab),
+            isPaybackHost: true,
+          });
         }
 
         return createUiResponse({
           ok: true,
-          context: await this.resolveActiveContext({ forceRefresh: false }),
+          context:
+            targetTabId
+              ? buildTabContext({
+                  ...(this.dependencies.registry.get(targetTabId) ?? createEmptyContext()),
+                  tabId: targetTabId,
+                  windowId: extractWindowId(targetTab),
+                  isPaybackHost: true,
+                  contentReady: false,
+                })
+              : await this.resolveActiveContext({ forceRefresh: false }),
         });
       }
     }

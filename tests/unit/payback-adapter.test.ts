@@ -106,6 +106,44 @@ describe('PaybackAdapter', () => {
     );
   });
 
+  it('collapses nested coupon wrappers onto canonical card containers', async () => {
+    document.body.innerHTML = `
+      <main>
+        <section>
+          <article class="coupon-card">
+            <div class="coupon-card__content">
+              <div class="coupon-copy">
+                <strong>500 Extra °P</strong>
+                <p>Gueltig bis 29.03.2026</p>
+              </div>
+              <button>Vor Ort einlösen</button>
+              <button aria-label="Info">i</button>
+            </div>
+          </article>
+          <article class="coupon-card">
+            <div class="coupon-card__content">
+              <div class="coupon-copy">
+                <strong>40fach °P</strong>
+                <p>Gueltig bis 31.03.2026</p>
+              </div>
+              <button>Online einlösen</button>
+              <button aria-label="Info">i</button>
+            </div>
+          </article>
+        </section>
+      </main>
+    `;
+
+    const adapter = new PaybackAdapter();
+    const candidates = await adapter.collectCandidates();
+
+    expect(candidates).toHaveLength(2);
+    expect(new Set(candidates.map((candidate) => candidate.id)).size).toBe(2);
+    expect(candidates.every((candidate) => candidate.status === 'already-active')).toBe(
+      true
+    );
+  });
+
   it('falls back to the legacy shadow-dom structure when present', async () => {
     const couponCenter = document.createElement('pb-coupon-center');
     const couponCenterShadow = couponCenter.attachShadow({ mode: 'open' });

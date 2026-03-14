@@ -23,6 +23,7 @@ import {
   LOGIN_PATTERNS,
   REDEEM_PATTERNS,
   SEMANTIC_CONTAINER_SELECTOR,
+  PREFERRED_CONTAINER_SELECTOR,
   UNAVAILABLE_PATTERNS,
   matchesAny,
 } from './patterns';
@@ -35,8 +36,9 @@ interface PaybackAdapterOptions {
 }
 
 const logger = createLogger('payback-adapter');
+const MIN_COUPON_CONTAINER_TEXT_LENGTH = 10;
 const MAX_COUPON_CONTAINER_TEXT_LENGTH = 900;
-const MAX_RELEVANT_ACTIONS_PER_CONTAINER = 3;
+const MAX_RELEVANT_ACTIONS_PER_CONTAINER = 1;
 const DATE_PATTERN = /\b\d{1,2}\.\d{1,2}\.\d{2,4}\b/g;
 const POINTS_PATTERN = /\b\d+\s*(?:fach|xfach|°p|punkte?)\b/gi;
 
@@ -490,16 +492,23 @@ export class PaybackAdapter {
     actionCandidates: ResolvedCouponCandidate[]
   ): ResolvedCouponCandidate[] {
     const knownIds = new Set(actionCandidates.map((candidate) => candidate.id));
+    const canonicalContainers = new Map<string, HTMLElement>();
 
-    return queryAllDeep<HTMLElement>(CONTAINER_SELECTOR, this.getSearchRoot())
+    for (const container of queryAllDeep<HTMLElement>(
+      CONTAINER_SELECTOR,
+      this.getSearchRoot()
+    )) {
+      const canonicalContainer = this.resolveCouponContainer(container);
+      if (!canonicalContainer) {
+        continue;
+      }
+
+      canonicalContainers.set(this.getCandidateId(canonicalContainer), canonicalContainer);
+    }
+
+    return Array.from(canonicalContainers.values())
       .filter((container) => this.isCouponLikeContainer(container))
-      .filter(
-        (container) =>
-          !actionCandidates.some(
-            (candidate) =>
-              candidate.container !== container && container.contains(candidate.container)
-          )
-      )
+      .filter((container) => !actionCandidates.some((candidate) => candidate.container === container))
       .map((container) => this.buildPassiveCandidate(container))
       .filter(
         (candidate): candidate is ResolvedCouponCandidate => candidate !== null
@@ -675,7 +684,10 @@ export class PaybackAdapter {
     }
 
     const text = getTextContent(element);
-    if (text.length < 20 || text.length > MAX_COUPON_CONTAINER_TEXT_LENGTH) {
+    if (
+      text.length < MIN_COUPON_CONTAINER_TEXT_LENGTH ||
+      text.length > MAX_COUPON_CONTAINER_TEXT_LENGTH
+    ) {
       return false;
     }
 
@@ -736,21 +748,21 @@ export class PaybackAdapter {
 
   private resolveCouponContainer(element: HTMLElement): HTMLElement | null {
     let current: HTMLElement | null = element;
-    let fallback: HTMLElement | null = null;
+    let preferredContainer: HTMLElement | null = null;
+    let semanticFallback: HTMLElement | null = null;
 
     while (current && current !== document.body) {
       if (this.isContainerCandidateElement(current) && this.isCouponLikeContainer(current)) {
-        return current;
+        if (current.matches(PREFERRED_CONTAINER_SELECTOR)) {
+          preferredContainer = current;
+        } else if (current.matches(SEMANTIC_CONTAINER_SELECTOR)) {
+          semanticFallback = current;
+        }
       }
-
-      if (!fallback && current.matches(SEMANTIC_CONTAINER_SELECTOR)) {
-        fallback = current;
-      }
-
       current = current.parentElement;
     }
 
-    return fallback;
+    return preferredContainer ?? semanticFallback;
   }
 
   private isContainerCandidateElement(element: HTMLElement): boolean {

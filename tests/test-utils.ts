@@ -133,6 +133,9 @@ export function installChromeMock(): ChromeMockControls {
       sendMessage: vi.fn(async () => undefined),
       update: vi.fn(async () => undefined),
       create: vi.fn(async () => undefined),
+      onUpdated: {
+        addListener: vi.fn(),
+      },
       onRemoved: {
         addListener: vi.fn(),
       },

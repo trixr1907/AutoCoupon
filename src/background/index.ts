@@ -1,4 +1,9 @@
-import { browserApi, openOptionsPage } from '../platform/browser/browser';
+import {
+  browserApi,
+  extractWindowId,
+  isPaybackUrl,
+  openOptionsPage,
+} from '../platform/browser/browser';
 import { BackgroundRouter } from '../platform/messaging/background-router';
 import { SessionRegistry } from './session-registry';
 import { createLogger } from '../shared/logging/logger';
@@ -46,4 +51,16 @@ browserApi.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 browserApi.tabs.onRemoved.addListener((tabId) => {
   registry.remove(tabId);
+});
+
+browserApi.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (!changeInfo.url && changeInfo.status !== 'loading') {
+    return;
+  }
+
+  const nextUrl = changeInfo.url ?? tab.url;
+  registry.markNavigating(tabId, {
+    windowId: extractWindowId(tab),
+    isPaybackHost: isPaybackUrl(nextUrl),
+  });
 });

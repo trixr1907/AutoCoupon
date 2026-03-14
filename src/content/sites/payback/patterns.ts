@@ -9,6 +9,17 @@ export const SEMANTIC_CONTAINER_SELECTOR = [
   'section',
 ].join(', ');
 
+export const PREFERRED_CONTAINER_SELECTOR = [
+  '[data-testid*="coupon" i]',
+  '[data-qa*="coupon" i]',
+  '[class*="coupon" i]',
+  '[id*="coupon" i]',
+  'article',
+  '[role="article"]',
+  '[role="listitem"]',
+  'li',
+].join(', ');
+
 export const CONTAINER_SELECTOR = [
   '[data-testid*="coupon" i]',
   '[data-qa*="coupon" i]',

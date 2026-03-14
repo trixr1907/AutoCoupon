@@ -93,4 +93,46 @@ describe('BackgroundRouter', () => {
       },
     });
   });
+
+  it('returns a loading PAYBACK context after opening the coupon page from a foreign tab', async () => {
+    const controls = getChromeMockControls();
+    controls.activeTab = {
+      ...(controls.activeTab ?? {
+        id: 1,
+        windowId: 1,
+        active: true,
+        highlighted: true,
+        index: 0,
+        pinned: false,
+        incognito: false,
+        selected: true,
+        discarded: false,
+        autoDiscardable: true,
+        groupId: -1,
+        frozen: false,
+      }),
+      id: 7,
+      url: 'https://github.com/trixr1907/AutoCoupon',
+    };
+
+    const router = new BackgroundRouter({
+      registry: new SessionRegistry(),
+    });
+
+    const response = await router.handleMessage(
+      {
+        type: POPUP_MESSAGE_TYPE.pageOpenCoupons,
+      },
+      {}
+    );
+
+    expect(response).toMatchObject({
+      ok: true,
+      context: {
+        tabId: 7,
+        isPaybackHost: true,
+        contentReady: false,
+      },
+    });
+  });
 });

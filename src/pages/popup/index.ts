@@ -151,7 +151,7 @@ function renderResponse(response: BackgroundUiResponse): void {
   renderContext(response.context ?? null);
   renderNotification(response.notification ?? null);
 
-  if (response.context?.status?.canCancel) {
+  if (shouldPoll(response.context ?? null)) {
     startPolling();
   } else {
     stopPolling();
@@ -184,6 +184,14 @@ function renderState(
   pageState: ActiveTabContext['pageState'],
   context: ActiveTabContext | null
 ): void {
+  if (context?.isPaybackHost && !context.contentReady && !context.status?.canCancel) {
+    elements.stateHeadline.textContent = 'Coupon-Seite wird geladen';
+    elements.stateCopy.textContent =
+      'PAYBACK erkannt. Die Coupon-Seite wird geöffnet und geprüft.';
+    elements.stateDot.className = 'state-dot warning';
+    return;
+  }
+
   let headline = 'Coupon-Seite bereit';
   const copy =
     context?.status?.message ??
@@ -239,6 +247,18 @@ function renderSummary(
   elements.activatedValue.textContent = String(summary?.activated ?? 0);
   elements.skippedValue.textContent = String(skipped);
   elements.failedValue.textContent = String(summary?.failed ?? 0);
+}
+
+function shouldPoll(context: ActiveTabContext | null): boolean {
+  if (!context) {
+    return false;
+  }
+
+  if (context.status?.canCancel) {
+    return true;
+  }
+
+  return context.isPaybackHost && !context.contentReady;
 }
 
 function renderNotification(notification: UiNotification | null): void {

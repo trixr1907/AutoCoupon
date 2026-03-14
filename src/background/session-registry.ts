@@ -45,6 +45,22 @@ export class SessionRegistry {
     return context;
   }
 
+  markNavigating(
+    tabId: number,
+    input: {
+      windowId: number | null;
+      isPaybackHost: boolean;
+    }
+  ): ActiveTabContext {
+    const context = this.ensure(tabId, input.windowId);
+    context.windowId = input.windowId;
+    context.isPaybackHost = input.isPaybackHost;
+    context.contentReady = false;
+    context.pageState = input.isPaybackHost ? 'unsupported-page' : 'unsupported-page';
+    context.status = null;
+    return context;
+  }
+
   markContentReady(tabId: number, windowId: number | null): ActiveTabContext {
     const context = this.ensure(tabId, windowId);
     context.windowId = windowId;
