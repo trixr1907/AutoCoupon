@@ -204,6 +204,7 @@ Firefox-spezifische Distributions-Skripte:
 ```bash
 npm run build:firefox:selfhost
 npm run lint:firefox
+npm run package:firefox:source
 npm run sign:firefox:unlisted
 ```
 

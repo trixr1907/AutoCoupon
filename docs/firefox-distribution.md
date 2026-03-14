@@ -59,6 +59,20 @@ Hinweis:
 
 - Dieses Paket ist ohne Mozilla-Signierung noch keine dauerhafte Installationsloesung fuer normalen Firefox.
 
+## Source-Code-Paket fuer Mozilla vorbereiten
+
+Fuer manuelle Mozilla-Uploads ist ein separates Source-Paket sinnvoll, damit der gebuendelte Vite-Build nachvollziehbar pruefbar bleibt:
+
+```bash
+npm run package:firefox:source
+```
+
+Ergebnis:
+
+- Ausgabe unter `packages/firefox-source/`
+
+Die vorbereiteten Upload-Dateien und Reviewer-Texte sind in [docs/amo-unlisted-submission.md](./amo-unlisted-submission.md) zusammengefasst.
+
 ## Firefox-Linting
 
 ```bash

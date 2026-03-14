@@ -19,6 +19,7 @@
     "build": "npm run clean && npm run build:chromium && npm run build:firefox",
     "lint:firefox": "npm run build:firefox && web-ext lint --source-dir dist/firefox --boring",
     "package": "npm run build && node ./scripts/package-build.mjs",
+    "package:firefox:source": "node ./scripts/package-firefox-source.mjs",
     "sign:firefox:unlisted": "npm run build:firefox && web-ext sign --channel=unlisted --source-dir dist/firefox --artifacts-dir packages/firefox-signed",
     "generate-icons": "node ./scripts/generate-icons.js",
     "preview": "vite preview"
